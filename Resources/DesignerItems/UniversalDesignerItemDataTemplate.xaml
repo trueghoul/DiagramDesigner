@@ -51,7 +51,8 @@
                     Width="150"
                     Margin="5" 
                     TextWrapping="Wrap"
-                    AcceptsReturn="True"/>
+                    AcceptsReturn="True"
+                    />
             <Label Grid.Column="0"
                    Grid.Row="1"
                    Content="Font Size"

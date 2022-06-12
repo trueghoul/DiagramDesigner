@@ -37,10 +37,13 @@ namespace DiagramDesigner
                 _filename = openFileDialog.SafeFileName;
                 try
                 {
-                    File.Copy(_filepath, Path.Combine("../../" + Directory, _filename), true);
+                    //File.Copy(_filepath, Path.Combine("../../" + Directory, _filename), true);
+
+                    System.IO.Directory.CreateDirectory("../../bin/Debug/Resources/Images/");
+                    File.Copy(_filepath, Path.Combine("../../bin/Debug/Resources/Images/" + _filename), true);
                 }
                 catch { new Exception(); }
-                _toolBoxItems.Add(new ToolBoxData(Directory + _filename, typeof(UniversalDesignerItemViewModel)));
+                _toolBoxItems.Add(new ToolBoxData("pack://siteoforigin:,,,/Resources/Images/" + _filename, typeof(UniversalDesignerItemViewModel)));
             }
         }
         public ObservableCollection<ToolBoxData> ToolBoxItems
