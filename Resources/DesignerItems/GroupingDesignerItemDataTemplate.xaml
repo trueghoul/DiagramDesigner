@@ -1,0 +1,28 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:DiagramDesigner">
+
+    <!-- DataTemplate for DesignerCanvas look and feel -->
+    <DataTemplate DataType="{x:Type s:GroupingDesignerItemViewModel}">
+        <Grid>
+            <ItemsControl ItemsSource="{Binding Items}" 
+                          Panel.ZIndex="{Binding Items.Count}" 
+                          ItemContainerStyleSelector="{x:Static s:DesignerItemsControlItemStyleSelector.Instance}"
+                          >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <s:DesignerCanvas AllowDrop="True"  />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <Rectangle 
+                    Stretch="Fill"
+                       Width="{Binding ItemWidth}"
+                       Height="{Binding ItemHeight}"
+                    Style="{StaticResource Grouping}"
+                    Tag="Group" />
+
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>
