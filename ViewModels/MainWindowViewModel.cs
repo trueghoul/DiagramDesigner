@@ -137,7 +137,6 @@ namespace DiagramDesigner
                 {
                     connectionsToAlsoRemove.Add(connector);
                 }
-
             }
             itemsToRemove.AddRange(connectionsToAlsoRemove);
             foreach (var selectedItem in itemsToRemove)
@@ -350,25 +349,13 @@ namespace DiagramDesigner
 
         private void SavePersistDesignerItem(IDiagramItem wholeDiagramToSave, IDiagramViewModel diagramViewModel)
         {
-            //Save all PersistDesignerItemViewModel
-            foreach (var persistItemVM in diagramViewModel.Items.OfType<PersistDesignerItemViewModel>())
-            {
-                PersistDesignerItem persistDesignerItem = new PersistDesignerItem(persistItemVM.Id, persistItemVM.Left, persistItemVM.Top, persistItemVM.ItemWidth, persistItemVM.ItemHeight, persistItemVM.HostUrl);
-                persistItemVM.Id = databaseAccessService.SavePersistDesignerItem(persistDesignerItem);
-                wholeDiagramToSave.DesignerItems.Add(new DiagramItemData(persistDesignerItem.Id, typeof(PersistDesignerItem)));
-            }
-            //Save all SettingsDesignerItemViewModel
-            foreach (var settingsItemVM in diagramViewModel.Items.OfType<SettingsDesignerItemViewModel>())
-            {
-                SettingsDesignerItem settingsDesignerItem = new SettingsDesignerItem(settingsItemVM.Id, settingsItemVM.Left, settingsItemVM.Top, settingsItemVM.ItemWidth, settingsItemVM.ItemHeight, settingsItemVM.Setting1);
-                settingsItemVM.Id = databaseAccessService.SaveSettingDesignerItem(settingsDesignerItem);
-                wholeDiagramToSave.DesignerItems.Add(new DiagramItemData(settingsDesignerItem.Id, typeof(SettingsDesignerItem)));
-            }
             //Save all RhombusDesignerItemViewModel
-            foreach (var rhombusItemVM in diagramViewModel.Items.OfType<RhombusDesignerItemViewModel>())
+            foreach (var universalItemVM in diagramViewModel.Items.OfType<UniversalDesignerItemViewModel>())
             {
-                RhombusDesignerItem rhombusDesignerItem = new RhombusDesignerItem(rhombusItemVM.Id, rhombusItemVM.Left, rhombusItemVM.Top, rhombusItemVM.ItemWidth, rhombusItemVM.ItemHeight, rhombusItemVM.Text);
-                rhombusItemVM.Id = databaseAccessService.SaveRhombusDesignerItem(rhombusDesignerItem);
+                UniversalDesignerItem universalDesignerItem = new UniversalDesignerItem(universalItemVM.Id, universalItemVM.Left, universalItemVM.Top,
+                    universalItemVM.ItemWidth, universalItemVM.ItemHeight, universalItemVM.Text, universalItemVM.FontSize);
+
+                universalItemVM.Id = databaseAccessService.SaveRhombusDesignerItem(rhombusDesignerItem);
                 wholeDiagramToSave.DesignerItems.Add(new DiagramItemData(rhombusDesignerItem.Id, typeof(SettingsDesignerItem)));
             }
             //Save all GroupingDesignerItemViewModel
@@ -400,7 +387,6 @@ namespace DiagramDesigner
                 wholeDiagramToSave.ConnectionIds.Add(connectionVM.Id);
             }
         }
-
         private void ExecuteLoadDiagramCommand(object parameter)
         {
             IsBusy = true;
@@ -431,26 +417,11 @@ namespace DiagramDesigner
 
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
-
         private void LoadPerstistDesignerItems(IDiagramItem wholeDiagramToLoad, IDiagramViewModel diagramViewModel)
         {
             //load diagram items
             foreach (DiagramItemData diagramItemData in wholeDiagramToLoad.DesignerItems)
             {
-                if (diagramItemData.ItemType == typeof(PersistDesignerItem))
-                {
-                    PersistDesignerItem persistedDesignerItem = databaseAccessService.FetchPersistDesignerItem(diagramItemData.ItemId);
-                    PersistDesignerItemViewModel persistDesignerItemViewModel =
-                        new PersistDesignerItemViewModel(persistedDesignerItem.Id, diagramViewModel, persistedDesignerItem.Left, persistedDesignerItem.Top, persistedDesignerItem.ItemWidth, persistedDesignerItem.ItemHeight, persistedDesignerItem.HostUrl);
-                    diagramViewModel.Items.Add(persistDesignerItemViewModel);
-                }
-                if (diagramItemData.ItemType == typeof(SettingsDesignerItem))
-                {
-                    SettingsDesignerItem settingsDesignerItem = databaseAccessService.FetchSettingsDesignerItem(diagramItemData.ItemId);
-                    SettingsDesignerItemViewModel settingsDesignerItemViewModel =
-                        new SettingsDesignerItemViewModel(settingsDesignerItem.Id, diagramViewModel, settingsDesignerItem.Left, settingsDesignerItem.Top, settingsDesignerItem.ItemWidth, settingsDesignerItem.ItemHeight, settingsDesignerItem.Setting1);
-                    diagramViewModel.Items.Add(settingsDesignerItemViewModel);
-                }
                 if (diagramItemData.ItemType == typeof(RhombusDesignerItem))
                 {
                     RhombusDesignerItem rhombusDesignerItem = databaseAccessService.FetchRhombusDesignerItem(diagramItemData.ItemId);
@@ -503,26 +474,17 @@ namespace DiagramDesigner
 
                 default:
                     throw new InvalidOperationException(
-                        string.Format("Found invalid persisted Connector Orientation for Connector Id: {0}", connectorId));
+                        string.Format("Обнаружена ошибочная ореинтация коннектора с Id: {0}", connectorId));
             }
         }
 
         private Type GetTypeOfDiagramItem(DesignerItemViewModelBase vmType)
         {
-            if (vmType is PersistDesignerItemViewModel)
-                return typeof(PersistDesignerItem);
-            if (vmType is SettingsDesignerItemViewModel)
-                return typeof(SettingsDesignerItem);
-            if (vmType is RhombusDesignerItemViewModel)
-                return typeof(RhombusDesignerItem);
+            if (vmType is UniversalDesignerItemViewModel)
+                return typeof(UniversalDesignerItem);
             if (vmType is GroupingDesignerItemViewModel)
                 return typeof(GroupDesignerItem);
-            
-
-            throw new InvalidOperationException(string.Format("Unknown diagram type. Currently only {0} and {1} are supported",
-                typeof(PersistDesignerItem).AssemblyQualifiedName,
-                typeof(SettingsDesignerItemViewModel).AssemblyQualifiedName
-                ));
+            throw new InvalidOperationException(string.Format("Элемент неизвестного типа."));
 
         }
 
@@ -530,19 +492,9 @@ namespace DiagramDesigner
         {
             DesignerItemViewModelBase dataItem = null;
 
-            if (connectorDataItemType == typeof(PersistDesignerItem))
+            if (connectorDataItemType == typeof(UniversalDesignerItem))
             {
-                dataItem = diagramViewModel.Items.OfType<PersistDesignerItemViewModel>().Single(x => x.Id == conectorDataItemId);
-            }
-
-            if (connectorDataItemType == typeof(SettingsDesignerItem))
-            {
-                dataItem = diagramViewModel.Items.OfType<SettingsDesignerItemViewModel>().Single(x => x.Id == conectorDataItemId);
-            }
-
-            if (connectorDataItemType == typeof(RhombusDesignerItem))
-            {
-                dataItem = diagramViewModel.Items.OfType<RhombusDesignerItemViewModel>().Single(x => x.Id == conectorDataItemId);
+                dataItem = diagramViewModel.Items.OfType<UniversalDesignerItemViewModel>().Single(x => x.Id == conectorDataItemId);
             }
 
             if (connectorDataItemType == typeof(GroupDesignerItem))
@@ -571,39 +523,6 @@ namespace DiagramDesigner
                     break;
             }
             return result;
-        }
-
-        private void DeleteFromDatabase(DiagramItem wholeDiagramToAdjust, SelectableDesignerItemViewModelBase itemToDelete)
-        {
-
-            //make sure the item is removes from Diagram as well as removing them as individual items from database
-            if (itemToDelete is PersistDesignerItemViewModel)
-            {
-                DiagramItemData diagramItemToRemoveFromParent = wholeDiagramToAdjust.DesignerItems.Where(x => x.ItemId == itemToDelete.Id && x.ItemType == typeof(PersistDesignerItem)).Single();
-                wholeDiagramToAdjust.DesignerItems.Remove(diagramItemToRemoveFromParent);
-                databaseAccessService.DeletePersistDesignerItem(itemToDelete.Id);
-            }
-            if (itemToDelete is SettingsDesignerItemViewModel)
-            {
-                DiagramItemData diagramItemToRemoveFromParent = wholeDiagramToAdjust.DesignerItems.Where(x => x.ItemId == itemToDelete.Id && x.ItemType == typeof(SettingsDesignerItem)).Single();
-                wholeDiagramToAdjust.DesignerItems.Remove(diagramItemToRemoveFromParent);
-                databaseAccessService.DeleteSettingDesignerItem(itemToDelete.Id);
-            }
-            if (itemToDelete is RhombusDesignerItemViewModel)
-            {
-                DiagramItemData diagramItemToRemoveFromParent = wholeDiagramToAdjust.DesignerItems.Where(x => x.ItemId == itemToDelete.Id && x.ItemType == typeof(RhombusDesignerItem)).Single();
-                wholeDiagramToAdjust.DesignerItems.Remove(diagramItemToRemoveFromParent);
-                databaseAccessService.DeleteRhombusDesignerItem(itemToDelete.Id);
-            }
-            if (itemToDelete is ConnectorViewModel)
-            {
-                wholeDiagramToAdjust.ConnectionIds.Remove(itemToDelete.Id);
-                databaseAccessService.DeleteConnection(itemToDelete.Id);
-            }
-
-            databaseAccessService.SaveDiagram(wholeDiagramToAdjust);
-
-
         }
         */
     }

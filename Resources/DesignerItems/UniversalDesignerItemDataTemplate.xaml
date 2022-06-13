@@ -6,6 +6,10 @@
     <!-- DataTemplate for DesignerCanvas look and feel -->
     <DataTemplate DataType="{x:Type local:UniversalDesignerItemViewModel}">
         <Grid>
+            <Image IsHitTestVisible="False"
+                   Stretch="Fill"
+                   Source="{Binding ImageUrl, Converter={x:Static local:ImageUrlConverter.Instance}}"
+                   Tag="setting" />
             <TextBlock Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
@@ -13,10 +17,6 @@
                    FontWeight="Bold"
                    TextWrapping="Wrap"
                    IsHitTestVisible="False"></TextBlock>
-            <Image IsHitTestVisible="False"
-                   Stretch="Fill"
-                   Source="{Binding ImageUrl, Converter={x:Static local:ImageUrlConverter.Instance}}"
-                   Tag="setting" />
             <Button HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Margin="5"

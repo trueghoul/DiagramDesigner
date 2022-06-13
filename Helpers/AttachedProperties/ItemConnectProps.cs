@@ -51,9 +51,5 @@ namespace DiagramDesigner
                 designerItem.ShowConnectors = true;
             }
         }
-
-
-
-
     }
 }
