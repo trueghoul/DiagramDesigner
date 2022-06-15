@@ -17,7 +17,8 @@
 
         <ResourceDictionary Source="Resources/Styles.xaml" />
 
-        <ResourceDictionary Source="Resources/DesignerItems/UniversalDesignerItemDataTemplate.xaml" />
+                <ResourceDictionary Source="Resources/DesignerItems/UniversalDesignerItemDataTemplate.xaml" />
+                <ResourceDictionary Source="Resources/DesignerItems/RectangleDesignerItemDataTemplate.xaml" />
         <ResourceDictionary Source="Resources/DesignerItems/TextBoxDesignerItemDataTemplate.xaml" />
         <ResourceDictionary Source="Resources/DesignerItems/GroupingDesignerItemDataTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>

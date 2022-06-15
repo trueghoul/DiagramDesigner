@@ -32,11 +32,5 @@ namespace DiagramDesigner
         {
             throw new NotImplementedException();
         }
-
-
-
-
-
-
     }
 }

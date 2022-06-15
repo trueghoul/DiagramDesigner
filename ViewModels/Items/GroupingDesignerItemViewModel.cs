@@ -5,36 +5,65 @@ using System.Text;
 using DiagramDesigner;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
+using System.Windows.Media;
 
 namespace DiagramDesigner
 {
-    public class GroupingDesignerItemViewModel : DesignerItemViewModelBase, IDiagramViewModel
+    public class GroupingDesignerItemViewModel : DesignerItemViewModelBase, IDiagramViewModel, ISupportDataChanges
     {
-
+        private IUIVisualizerService visualiserService;
         private ObservableCollection<SelectableDesignerItemViewModelBase> items = new ObservableCollection<SelectableDesignerItemViewModelBase>();
 
-        public GroupingDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top)
+        public GroupingDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, Brush stroke, double strokeThickness)
             : base(id, parent, left, top)
         {
+            Stroke  = stroke;
+            OnPropertyChanged("Stroke");
+            StrokeThickness = strokeThickness;
+            OnPropertyChanged("StrokeThickness");
             Init();
         }
 
         public GroupingDesignerItemViewModel()
         {
+            Stroke = new SolidColorBrush(Colors.Black);
+            OnPropertyChanged("Stroke");
+            StrokeThickness = 1;
+            OnPropertyChanged("StrokeThickness");
             Init();
         }
 
-        public GroupingDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight) : base(id, parent, left, top, itemWidth, itemHeight)
+        public GroupingDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, Brush stroke, double strokeThickness)
+            : base(id, parent, left, top, itemWidth, itemHeight)
         {
+            Stroke = stroke;
+            OnPropertyChanged("Stroke");
+            StrokeThickness = strokeThickness;
+            OnPropertyChanged("StrokeThickness");
             Init();
         }
+        public Brush Stroke { get; set; }
+        public double StrokeThickness { get; set; }
 
         public SimpleCommand AddItemCommand { get; private set; }
         public SimpleCommand RemoveItemCommand { get; private set; }
         public SimpleCommand ClearSelectedItemsCommand { get; private set; }
         public SimpleCommand CreateNewDiagramCommand { get; private set; }
 
+        public ICommand ShowDataChangeWindowCommand { get; private set; }
 
+        public void ExecuteShowDataChangeWindowCommand(object parameter)
+        {
+            GroupingDesignerItemData data = new GroupingDesignerItemData(StrokeThickness, Stroke);
+            if (visualiserService.ShowDialog(data) == true)
+            {
+                StrokeThickness = data.StrokeThickness;
+                OnPropertyChanged("StrokeThickness");
+                Stroke = data.Stroke;
+                OnPropertyChanged("Stroke");
+            }
+
+        }
 
         public ObservableCollection<SelectableDesignerItemViewModelBase> Items
         {
@@ -70,6 +99,10 @@ namespace DiagramDesigner
             foreach (SelectableDesignerItemViewModelBase item in Items)
             {
                 item.IsSelected = false;
+                if (item is DesignerItemViewModelBase) 
+                {
+                    (item as DesignerItemViewModelBase).ShowConnectors = false;
+                }
             }
         }
 
@@ -81,10 +114,13 @@ namespace DiagramDesigner
 
         private void Init()
         {
+            visualiserService = ApplicationServicesProvider.Instance.Provider.VisualizerService;
             AddItemCommand = new SimpleCommand(ExecuteAddItemCommand);
             RemoveItemCommand = new SimpleCommand(ExecuteRemoveItemCommand);
             ClearSelectedItemsCommand = new SimpleCommand(ExecuteClearSelectedItemsCommand);
             CreateNewDiagramCommand = new SimpleCommand(ExecuteCreateNewDiagramCommand);
+
+            ShowDataChangeWindowCommand = new SimpleCommand(ExecuteShowDataChangeWindowCommand);
 
             this.ShowConnectors = false;
         }

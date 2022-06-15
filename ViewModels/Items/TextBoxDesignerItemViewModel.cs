@@ -19,20 +19,28 @@ namespace DiagramDesigner
             : base(id, parent, left, top)
         {
             TextAlign = textAlign;
+            OnPropertyChanged("TextAlign");
             ItemHeight = 30;
             ItemWidth = 50;
             FontSize = fontSize;
+            OnPropertyChanged("FontSize");
             Text = text;
+            OnPropertyChanged("Text");
+
             Init();
         }
         public TextBoxDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, string textAlign)
             : base(id, parent, left, top, itemWidth, itemHeight)
         {
             TextAlign = textAlign;
-            ItemHeight = 30;
-            ItemWidth = 50;
+            OnPropertyChanged("TextAlign");
+            ItemHeight = itemHeight;
+            ItemWidth = itemWidth;
             FontSize = fontSize;
+            OnPropertyChanged("FontSize");
             Text = text;
+            OnPropertyChanged("Text");
+
             Init();
         }
 

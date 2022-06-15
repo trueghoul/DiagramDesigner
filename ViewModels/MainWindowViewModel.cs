@@ -9,6 +9,7 @@ using System.Windows.Data;
 using DiagramDesigner.Persistence.Commons;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace DiagramDesigner
 {
@@ -191,7 +192,7 @@ namespace DiagramDesigner
                     double margin = 15;
                     Rect rekt = GetBoundingRectangle(diagramViewModel.SelectedItems, margin);
 
-                    GroupingDesignerItemViewModel groupItem = new GroupingDesignerItemViewModel(0, this.diagramViewModel, rekt.Left, rekt.Top);
+                    GroupingDesignerItemViewModel groupItem = new GroupingDesignerItemViewModel(0, this.diagramViewModel, rekt.Left, rekt.Top, new SolidColorBrush(Colors.Black), 1);
                     groupItem.ItemWidth = rekt.Width;
                     groupItem.ItemHeight = rekt.Height;
                     foreach (var item in diagramViewModel.SelectedItems)

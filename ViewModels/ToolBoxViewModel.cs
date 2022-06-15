@@ -22,6 +22,7 @@ namespace DiagramDesigner
             _toolBoxItems.Add(new ToolBoxData(Directory + "Text.png", typeof(TextBoxDesignerItemViewModel)));
             _toolBoxItems.Add(new ToolBoxData(Directory + "Ellipse.png", typeof(UniversalDesignerItemViewModel)));
             _toolBoxItems.Add(new ToolBoxData(Directory + "Rhombus.png", typeof(UniversalDesignerItemViewModel)));
+            _toolBoxItems.Add(new ToolBoxData(Directory + "Rectangle.png", typeof(RectangleDesignerItemViewModel)));
 
         }
         private void ExecuteAddItemCommand(object parametr)

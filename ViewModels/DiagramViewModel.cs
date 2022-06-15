@@ -71,6 +71,10 @@ namespace DiagramDesigner
         {
             foreach (SelectableDesignerItemViewModelBase item in Items)
             {
+                if (item is GroupingDesignerItemViewModel)
+                {
+                    (item as GroupingDesignerItemViewModel).ClearSelectedItemsCommand.Execute(null);
+                }
                 item.IsSelected = false;
             }
         }

@@ -120,12 +120,12 @@
                                                 HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Stretch">
                                             <Polyline x:Name="poly"
-                                                        Stroke="Gray"
+                                                        Stroke="Black"
                                                         Points="{Binding Path=ConnectionPoints, Converter={x:Static s:ConnectionPathConverter.Instance}}"
                                                         StrokeThickness="2" />
 
                                             <Path x:Name="arrow"
-                                                    Data="M0,10 L5,0 10,10 z"
+                                                    Data=""
                                                     Visibility="{Binding Path=IsFullConnection, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
                                                     Fill="Gray"
                                                     HorizontalAlignment="Left"
@@ -147,7 +147,7 @@
                                                             Binding="{Binding IsSelected}">
                                                 <Setter TargetName="poly"
                                                         Property="Stroke"
-                                                        Value="Black" />
+                                                        Value="Gray" />
                                                 <Setter TargetName="arrow"
                                                         Property="Stroke"
                                                         Value="Black" />
