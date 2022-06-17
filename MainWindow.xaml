@@ -8,12 +8,24 @@
         SnapsToDevicePixels="True"
 		Title="Diagram Designer"        
 		Height="850" Width="1100">
+
     <Window.InputBindings>
         <KeyBinding Key="Del"
                     Command="{Binding DeleteSelectedItemsCommand}" />
     </Window.InputBindings>
 
     <DockPanel Margin="0">
+        <Menu DockPanel.Dock="Top" Height="25" Style="{Binding Men}" >
+            <MenuItem Header="_Файл">
+                <MenuItem Header="Создать">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Images/Icons/open.ico"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Открыть"></MenuItem>
+                <Separator></Separator>
+            </MenuItem>
+        </Menu>
         <ToolBar Height="35" DockPanel.Dock="Top">
             <Button ToolTip="Создать"
                     Content="Создать"

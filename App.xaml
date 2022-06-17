@@ -13,9 +13,9 @@
         <ResourceDictionary Source="pack://application:,,,/DiagramDesigner;component/Resources/Styles/ToolTip.xaml" />
         <ResourceDictionary Source="pack://application:,,,/DiagramDesigner;component/Resources/Styles/ScrollViewer.xaml" />
         <ResourceDictionary Source="pack://application:,,,/DiagramDesigner;component/Resources/Styles/ZoomBox.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/DiagramDesigner;component/Resources/Styles/DesignerItems.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/DiagramDesigner;component/Resources/Styles/DesignerItems.xaml" />
 
-        <ResourceDictionary Source="Resources/Styles.xaml" />
+                <ResourceDictionary Source="Resources/Styles.xaml" />
 
                 <ResourceDictionary Source="Resources/DesignerItems/UniversalDesignerItemDataTemplate.xaml" />
                 <ResourceDictionary Source="Resources/DesignerItems/RectangleDesignerItemDataTemplate.xaml" />

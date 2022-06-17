@@ -8,7 +8,7 @@ namespace DiagramDesigner.Persistence.Commons
     public class GroupDesignerItem : DesignerItemBase, IDiagramItem
     {
         public GroupDesignerItem(int id, double left, double top, double itemWidth, double itemHeight) 
-            : base(id, left, top, itemWidth, itemHeight)
+            : base(id, left, top, itemWidth, itemHeight, null)
         {
             this.DesignerItems = new List<DiagramItemData>();
             this.ConnectionIds = new List<int>();

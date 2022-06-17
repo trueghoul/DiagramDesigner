@@ -10,6 +10,7 @@ using DiagramDesigner.Persistence.Commons;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Text.Json;
 
 namespace DiagramDesigner
 {
@@ -38,7 +39,7 @@ namespace DiagramDesigner
 
             DeleteSelectedItemsCommand = new SimpleCommand(ExecuteDeleteSelectedItemsCommand);
             CreateNewDiagramCommand = new SimpleCommand(ExecuteCreateNewDiagramCommand);
-            //SaveDiagramCommand = new SimpleCommand(ExecuteSaveDiagramCommand);
+            SaveDiagramCommand = new SimpleCommand(ExecuteSaveDiagramCommand);
             //LoadDiagramCommand = new SimpleCommand(ExecuteLoadDiagramCommand);
             GroupCommand = new SimpleCommand(ExecuteGroupCommand);
 
@@ -49,7 +50,7 @@ namespace DiagramDesigner
 
         public SimpleCommand DeleteSelectedItemsCommand { get; private set; }
         public SimpleCommand CreateNewDiagramCommand { get; private set; }
-        //public SimpleCommand SaveDiagramCommand { get; private set; }
+        public SimpleCommand SaveDiagramCommand { get; private set; }
         public SimpleCommand GroupCommand { get; private set; }
         //public SimpleCommand LoadDiagramCommand { get; private set; }
         public ToolBoxViewModel ToolBoxViewModel { get; private set; }
@@ -287,6 +288,17 @@ namespace DiagramDesigner
         private bool ItemsToDeleteHasConnector(List<SelectableDesignerItemViewModelBase> itemsToRemove, FullyCreatedConnectorInfo connector)
         {
             return itemsToRemove.Contains(connector.DataItem);
+        }
+        private void ExecuteSaveDiagramCommand(object parameter)
+        {
+            var univer = DiagramViewModel.Items.First();
+            if (univer is UniversalDesignerItemViewModel)
+            {
+                UniversalDesignerItemViewModel _univer = univer as UniversalDesignerItemViewModel;
+                UniversalDesignerItem item = new UniversalDesignerItem(_univer.Id, _univer.Left, _univer.Top, _univer.ItemWidth,
+                    _univer.ItemHeight, _univer.Text, _univer.FontSize, _univer.ImageUrl);
+                string jsonString = JsonSerializer.Serialize(item);
+            }
         }
 
         /*
