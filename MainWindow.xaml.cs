@@ -27,18 +27,6 @@ namespace DiagramDesigner
 
             _mainWindowViewModel = new MainWindowViewModel();
             this.DataContext = _mainWindowViewModel;
-            this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
-        }
-
-
-        /// <summary>
-        /// This shows you how you can create diagram items in code, which means you can 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

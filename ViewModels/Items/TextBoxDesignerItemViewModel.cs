@@ -20,8 +20,8 @@ namespace DiagramDesigner
         {
             TextAlign = textAlign;
             OnPropertyChanged("TextAlign");
-            ItemHeight = 30;
-            ItemWidth = 50;
+            ItemHeight = 100;
+            ItemWidth = 100;
             FontSize = fontSize;
             OnPropertyChanged("FontSize");
             Text = text;
@@ -49,13 +49,13 @@ namespace DiagramDesigner
             TextAlign = "Center";
             OnPropertyChanged("TextAlign");
 
-            ItemHeight = 30;
-            ItemWidth = 50;
+            ItemHeight = 100;
+            ItemWidth = 100;
 
             Text = "text";
             OnPropertyChanged("Text");
 
-            FontSize = 12;
+            FontSize = 14;
             OnPropertyChanged("FontSize");
             Init();
         }

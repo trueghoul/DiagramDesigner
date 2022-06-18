@@ -7,16 +7,19 @@
     <!-- DataTemplate for DesignerCanvas look and feel -->
     <DataTemplate DataType="{x:Type local:TextBoxDesignerItemViewModel}">
         <Grid>
-            <TextBlock Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    TextAlignment="{Binding TextAlign}"
                    FontSize="{Binding FontSize}"
-                   FontWeight="Bold"
                    TextWrapping="Wrap"
-                   IsHitTestVisible="False"></TextBlock>
+                   AcceptsReturn="True"
+                     FontFamily="{Binding MyFontFamily}"
+                   ></TextBox>
             <Button HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
+                    VerticalAlignment="Center"
                     Margin="5"
                     Template="{StaticResource infoButtonTemplate}"
                     Command="{Binding ShowDataChangeWindowCommand}" />

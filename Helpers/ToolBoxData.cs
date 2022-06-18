@@ -9,11 +9,13 @@ namespace DiagramDesigner
     {
         public string ImageUrl { get; private set; }
         public Type Type { get; private set; }
+        public object Parametr { get ; private set; }
 
-        public ToolBoxData(string imageUrl, Type type)
+        public ToolBoxData(string imageUrl, Type type, object parametr)
         {
             this.ImageUrl = imageUrl;
             this.Type = type;
+            this.Parametr = parametr;
         }
     }
 }

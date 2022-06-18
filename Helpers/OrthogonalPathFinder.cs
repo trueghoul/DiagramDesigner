@@ -13,7 +13,7 @@ namespace DiagramDesigner
     // Helper class to provide an orthogonal connection path
     public class OrthogonalPathFinder : IPathFinder
     {
-        private const int margin = 2;
+        private const double margin = 2.5;
 
         public List<Point> GetConnectionLine(ConnectorInfo source, ConnectorInfo sink, bool showLastLine)
         {

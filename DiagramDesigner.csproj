@@ -71,6 +71,7 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="netstandard" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -131,6 +132,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\Lattice.cs" />
     <Compile Include="Helpers\Adorners\RubberbandAdorner.cs" />
     <Compile Include="Helpers\AttachedProperties\DragAndDropProps.cs" />
     <Compile Include="Helpers\AttachedProperties\ItemConnectProps.cs" />
@@ -165,8 +167,12 @@
     <Compile Include="ViewModels\Interfaces\ISupportDataChanges.cs" />
     <Compile Include="ViewModels\Items\GroupingDesignerItemData.cs" />
     <Compile Include="ViewModels\Items\GroupingDesignerItemViewModel.cs" />
+    <Compile Include="ViewModels\Items\ParallelogramDesignerItemData.cs" />
+    <Compile Include="ViewModels\Items\ParallelogramDesignerItemViewModel.cs" />
     <Compile Include="ViewModels\Items\RectangleDesignerItemData.cs" />
     <Compile Include="ViewModels\Items\RectangleDesignerItemViewModel.cs" />
+    <Compile Include="ViewModels\Items\RoundedRectangleDesignerItemData.cs" />
+    <Compile Include="ViewModels\Items\RoundedRectangleDesignerItemViewModel.cs" />
     <Compile Include="ViewModels\Items\TextBoxDesignerItemData.cs" />
     <Compile Include="ViewModels\Items\TextBoxDesignerItemViewModel.cs" />
     <Compile Include="ViewModels\Items\UniversalDesignerItemData.cs" />
@@ -204,7 +210,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Resources\DesignerItems\ParallelogramDesignerItemDataTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\DesignerItems\RectangleDesignerItemDataTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\DesignerItems\RoundedRectangleDesignerItemDataTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -306,13 +320,7 @@
     <Folder Include="Persistence\Repository\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\Ellipse.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\Text.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Rhombus.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
@@ -337,6 +345,37 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Icons\open.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\new.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\save.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\trash.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\grouping.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\roundedRec.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Circle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Ellipse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Rhombus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Parallelo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\cicledown.png" />
+    <Resource Include="Resources\Images\cicleup.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\System.Text.Json.6.0.5\build\System.Text.Json.targets" Condition="Exists('packages\System.Text.Json.6.0.5\build\System.Text.Json.targets')" />

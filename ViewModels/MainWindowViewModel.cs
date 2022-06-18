@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Text.Json;
+using System.Windows.Input;
 
 namespace DiagramDesigner
 {
@@ -42,6 +43,7 @@ namespace DiagramDesigner
             SaveDiagramCommand = new SimpleCommand(ExecuteSaveDiagramCommand);
             //LoadDiagramCommand = new SimpleCommand(ExecuteLoadDiagramCommand);
             GroupCommand = new SimpleCommand(ExecuteGroupCommand);
+            DeselectCommand = new SimpleCommand(ExecuteDeselectCommand);
 
             ConnectorViewModel.PathFinder = new OrthogonalPathFinder();
 
@@ -52,6 +54,7 @@ namespace DiagramDesigner
         public SimpleCommand CreateNewDiagramCommand { get; private set; }
         public SimpleCommand SaveDiagramCommand { get; private set; }
         public SimpleCommand GroupCommand { get; private set; }
+        public SimpleCommand DeselectCommand { get; private set; }
         //public SimpleCommand LoadDiagramCommand { get; private set; }
         public ToolBoxViewModel ToolBoxViewModel { get; private set; }
 
@@ -122,6 +125,10 @@ namespace DiagramDesigner
         }
 
 
+        private void ExecuteDeselectCommand(object parameter)
+        {
+            //Keyboard.ClearFocus();
+        }
 
         private void ExecuteDeleteSelectedItemsCommand(object parameter)
         {

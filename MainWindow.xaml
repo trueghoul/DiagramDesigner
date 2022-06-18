@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:s="clr-namespace:DiagramDesigner"
         WindowState="Maximized"
         SnapsToDevicePixels="True"
@@ -12,55 +13,78 @@
     <Window.InputBindings>
         <KeyBinding Key="Del"
                     Command="{Binding DeleteSelectedItemsCommand}" />
+        <KeyBinding Key="Esc"
+                    Command="{Binding DeselectCommand}"/>
     </Window.InputBindings>
 
     <DockPanel Margin="0">
-        <Menu DockPanel.Dock="Top" Height="25" Style="{Binding Men}" >
-            <MenuItem Header="_Файл">
-                <MenuItem Header="Создать">
+        <Menu DockPanel.Dock="Top" Margin="0,4,0,4" Height="Auto" Style="{Binding Men}" Background="White" >
+            <MenuItem Header="Файл">
+                <MenuItem Header="Создать" Command="{Binding CreateNewDiagramCommand}">
                     <MenuItem.Icon>
                         <Image Source="/Resources/Images/Icons/open.ico"></Image>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Открыть"></MenuItem>
+                <MenuItem Header="Открыть" Command="{Binding LoadDiagramCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Images/Icons/new.ico"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator></Separator>
+                <MenuItem Header="Сохранить" Command="{Binding SaveDiagramCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Images/Icons/save.ico"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Сохранить как" Command="{Binding SaveAsCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Images/Icons/save.ico"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Редактировать">
+                <MenuItem Header="Удалить">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Images/Icons/trash.ico"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Сгруппировать/разгруппировать" Command="{Binding GroupCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Images/Icons/grouping.ico"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
         </Menu>
-        <ToolBar Height="35" DockPanel.Dock="Top">
+        <ToolBar Height="35" DockPanel.Dock="Top" Background="White">
             <Button ToolTip="Создать"
-                    Content="Создать"
 					Margin="8,0,3,0"
-                    Command="{Binding CreateNewDiagramCommand}"/>
+                    Command="{Binding CreateNewDiagramCommand}">
+                <Image Source="/Resources/Images/Icons/new.ico"></Image>
+            </Button>
+            <Button ToolTip="Создать"
+					Margin="8,0,3,0"
+                    Command="{Binding CreateNewDiagramCommand}">
+                <Image Source="/Resources/Images/Icons/open.ico"></Image>
+            </Button>
             <Button ToolTip="Сохранить"
-                    Content="Сохранить"
                     Margin="8,0,3,0"
-                    Command="{Binding SaveDiagramCommand}" />
+                    Command="{Binding SaveDiagramCommand}" >
+                <Image Source="/Resources/Images/Icons/save.ico"></Image>
+            </Button>
             <Separator></Separator>
             <Button ToolTip="Сгрупировать/Разгрупировать"
-                    Content="Сгрупировать/Разгрупировать"
                     Margin="3,0,3,0"
-                    Command="{Binding GroupCommand}" />
+                    Command="{Binding GroupCommand}" >
+                <Image Source="/Resources/Images/Icons/grouping.ico"></Image>
+            </Button>
             <Separator></Separator>
-            <Label Margin="3,0,3,0"
-                   VerticalAlignment="Center"
-                   Content="Открыть:" />
-            <ComboBox Margin="8,0,3,0"
-                     Width="200"
-                     ToolTip="Saved Diagrams"
-                     SelectedItem="{Binding SavedDiagramId}"
-                     ItemsSource="{Binding SavedDiagrams}"/>
-            <Button ToolTip="Load Selected Diagram"
-                    Content="Загрузить"
-                    Margin="8,0,3,0"
-                    Command="{Binding LoadDiagramCommand}" />
             <ProgressBar Margin="8,0,3,0"
                          Visibility="{Binding Path=IsBusy, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
                          IsIndeterminate="True"
                          Width="150"
                          Height="20"
                          VerticalAlignment="Center" />
-
-
         </ToolBar>
 
         <Grid Margin="0,5,0,0">
@@ -68,8 +92,7 @@
                 <ColumnDefinition Width="230" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-
-            <!-- ToolBox Control -->
+            
             <s:ToolBoxControl Grid.Column="0"
                                   DataContext="{Binding ToolBoxViewModel}" />
 
@@ -78,9 +101,8 @@
 						  VerticalAlignment="Stretch"
 						  Background="Transparent"
 						  Width="3" />
-
-            <!-- Diagram Control -->
             <s:DiagramControl Grid.Column="1"
+                              x:Name="diagramControl"
                                   DataContext="{Binding DiagramViewModel}"
                                   Margin="3,1,0,0" />
         </Grid>

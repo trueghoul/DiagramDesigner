@@ -10,6 +10,11 @@
     <Border BorderBrush="LightGray"
             BorderThickness="1">
         <Grid>
+            <s:Lattice Opacity="0.8">
+                <s:Lattice.RodPen>
+                    <Pen Thickness="0.5" Brush="LightGray"></Pen>
+                </s:Lattice.RodPen>
+            </s:Lattice>
             <ScrollViewer Name="DesignerScrollViewer"
                           Background="Transparent"
                           HorizontalScrollBarVisibility="Auto"
@@ -42,7 +47,7 @@
                                             <ContentPresenter x:Name="PART_ContentPresenter"
                                                                 HorizontalAlignment="Stretch"
                                                                 VerticalAlignment="Stretch"
-                                                                Content="{TemplateBinding Content}" />
+                                                                Content="{TemplateBinding Content}"/>
                                             <Grid Margin="-3"
                                                     x:Name="PART_ConnectorDecorator">
                                                 <s:Connector DataContext="{Binding LeftConnector}"
@@ -123,11 +128,11 @@
                                                         Stroke="Black"
                                                         Points="{Binding Path=ConnectionPoints, Converter={x:Static s:ConnectionPathConverter.Instance}}"
                                                         StrokeThickness="2" />
-
+                                            <!--M0,10 L5,0 10,10 z-->
                                             <Path x:Name="arrow"
                                                     Data=""
                                                     Visibility="{Binding Path=IsFullConnection, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
-                                                    Fill="Gray"
+                                                    Fill="Black"
                                                     HorizontalAlignment="Left"
                                                     Height="10"
                                                     Canvas.Left="{Binding EndPoint.X}"
@@ -215,7 +220,7 @@
                             <s:DesignerCanvas Loaded="DesignerCanvas_Loaded"
                                                 MinHeight="800"
                                                 MinWidth="1000"
-                                                Background="White"
+                                                Background="Transparent"
                                                 AllowDrop="True">
                             </s:DesignerCanvas>
                         </ItemsPanelTemplate>
@@ -223,8 +228,9 @@
                 </ItemsControl>
             </ScrollViewer>
             <s:ZoomBox x:Name="zoomBox"
-                       Width="180"
+                       Width="200"
                        HorizontalAlignment="Right"
+                       Panel.ZIndex="2"
                        VerticalAlignment="Top"
                        ScrollViewer="{Binding ElementName=DesignerScrollViewer}"
                        Margin="0,5,25,0" />

@@ -11,5 +11,6 @@ namespace DiagramDesigner
     {
         public Type ContentType { get; set; }
         public string ImageUrl { get; set; }
+        public object Paramter { get; set; }
     }
 }

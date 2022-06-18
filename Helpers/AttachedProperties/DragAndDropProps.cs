@@ -76,6 +76,7 @@ namespace DiagramDesigner
                 DragObject dataObject = new DragObject();
                 dataObject.ContentType = (((FrameworkElement)sender).DataContext as ToolBoxData).Type;
                 dataObject.ImageUrl = (((FrameworkElement)sender).DataContext as ToolBoxData).ImageUrl;
+                dataObject.Paramter = (((FrameworkElement)sender).DataContext as ToolBoxData).Parametr;
                 DragDrop.DoDragDrop((DependencyObject)sender, dataObject, DragDropEffects.Copy);
                 e.Handled = true;
             }

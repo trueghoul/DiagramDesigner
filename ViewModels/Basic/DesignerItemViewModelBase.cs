@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace DiagramDesigner
 {
@@ -12,6 +13,8 @@ namespace DiagramDesigner
         private double top;
         private bool showConnectors = false;
         private string _imageUrl;
+        private object _parametr;
+        private FontFamily _myFontFamily;
         private List<FullyCreatedConnectorInfo> connectors = new List<FullyCreatedConnectorInfo>();
 
         private double itemWidth = 80;
@@ -20,6 +23,15 @@ namespace DiagramDesigner
         public DesignerItemViewModelBase(int id, IDiagramViewModel parent, double left, double top) 
             : base(id, parent)
         {
+            this.left = left;
+            this.top = top;
+            Init();
+        }
+
+        public DesignerItemViewModelBase(int id, IDiagramViewModel parent, double left, double top, string imageUrl)
+    : base(id, parent)
+        {
+            ImageUrl = imageUrl;
             this.left = left;
             this.top = top;
             Init();
@@ -37,7 +49,13 @@ namespace DiagramDesigner
 
         public DesignerItemViewModelBase(): base()
         {
+            MyFontFamily = new FontFamily("GOST Type A");
             Init();
+        }
+        public FontFamily MyFontFamily
+        {
+            get { return _myFontFamily; }
+            set { _myFontFamily = value; OnPropertyChanged("MyFontFamily"); }
         }
 
         public string ImageUrl
@@ -47,6 +65,15 @@ namespace DiagramDesigner
             {
                 _imageUrl = value;
                 OnPropertyChanged("ImageUrl");
+            }
+        }
+        public object Parametr
+        {
+            get { return _parametr; }
+            set
+            {
+                _parametr = value;
+                OnPropertyChanged("Parametr");
             }
         }
         public double ItemWidth

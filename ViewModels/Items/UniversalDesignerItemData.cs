@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 using DiagramDesigner;
 
 namespace DiagramDesigner
@@ -12,6 +13,7 @@ namespace DiagramDesigner
         private int _fontSize;
         private double _itemWidth;
         private double _itemHeight;
+        private FontFamily _fontFamily;
 
         public UniversalDesignerItemData(string text, double itemHeight, double itemWidth, int fontSize)
         {
@@ -21,6 +23,18 @@ namespace DiagramDesigner
             _fontSize = fontSize;
         }
 
+        public FontFamily MyFontFamily
+        {
+            get
+            {
+                return _fontFamily;
+            }
+            set
+            {
+                _fontFamily = value;
+                OnPropertyChanged(nameof(MyFontFamily));
+            }
+        }
         public string Text
         {
             get

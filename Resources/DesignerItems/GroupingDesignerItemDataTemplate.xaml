@@ -25,7 +25,8 @@
                 StrokeThickness="{Binding StrokeThickness}"
                 StrokeLineJoin="Round"
                 IsHitTestVisible="False"
-                SnapsToDevicePixels="True">
+                SnapsToDevicePixels="True"
+                Tag="Group">
             </Rectangle>
             
             <Button HorizontalAlignment="Right"

@@ -19,13 +19,11 @@ namespace DiagramDesigner
         private List<Connector> connectorsHit = new List<Connector>();
         private Connector sourceConnector;
         private Point? rubberbandSelectionStartPoint = null;
-
         public DesignerCanvas()
         {
             this.AllowDrop = true;
             Mediator.Instance.Register(this);
         }
-
 
         public Connector SourceConnector
         {
@@ -201,6 +199,7 @@ namespace DiagramDesigner
                 itemBase.Top = Math.Max(0, position.Y - itemBase.ItemHeight / 2);
                 itemBase.IsSelected = true;
                 itemBase.ImageUrl = dragObject.ImageUrl;
+                itemBase.Parametr = dragObject.Paramter;
                 (DataContext as IDiagramViewModel).AddItemCommand.Execute(itemBase);
             }
             e.Handled = true;

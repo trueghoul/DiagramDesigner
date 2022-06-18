@@ -8,13 +8,15 @@ using System.Windows.Media;
 
 namespace DiagramDesigner
 {
-    public class RectangleDesignerItemViewModel : DesignerItemViewModelBase, ISupportDataChanges
+    public class RoundedRectangleDesignerItemViewModel : DesignerItemViewModelBase, ISupportDataChanges
     {
         private IUIVisualizerService visualiserService;
 
-        public RectangleDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, string text, int fontSize, Brush stroke, double strokeThickness)
+        public RoundedRectangleDesignerItemViewModel(double radius, int id, IDiagramViewModel parent, double left, double top, string text, int fontSize, Brush stroke, double strokeThickness)
             : base(id, parent, left, top)
         {
+            Radius = radius;
+            OnPropertyChanged("Radius");
             Stroke = stroke;
             OnPropertyChanged("Stroke");
             StrokeThickness = strokeThickness;
@@ -26,9 +28,11 @@ namespace DiagramDesigner
 
             Init();
         }
-        public RectangleDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, Brush stroke, double strokeThickness)
+        public RoundedRectangleDesignerItemViewModel(double radius, int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, Brush stroke, double strokeThickness)
             : base(id, parent, left, top, itemWidth, itemHeight)
         {
+            Radius = radius;
+            OnPropertyChanged("Radius");
             Stroke = stroke;
             OnPropertyChanged("Stroke");
             StrokeThickness = strokeThickness;
@@ -41,8 +45,10 @@ namespace DiagramDesigner
             Init();
         }
 
-        public RectangleDesignerItemViewModel() : base()
+        public RoundedRectangleDesignerItemViewModel() : base()
         {
+            Radius = 20;
+            OnPropertyChanged("Radius");
             FontSize = 14;
             OnPropertyChanged("FontSize");
             Stroke = new SolidColorBrush(Colors.Black);
@@ -57,11 +63,12 @@ namespace DiagramDesigner
         public int FontSize { get; set; }
         public double StrokeThickness { get; set; }
         public Brush Stroke { get; set; }
+        public double Radius { get; set; }
         public ICommand ShowDataChangeWindowCommand { get; private set; }
 
         public void ExecuteShowDataChangeWindowCommand(object parameter)
         {
-            RectangleDesignerItemData data = new RectangleDesignerItemData(StrokeThickness, Stroke, Text, ItemHeight, ItemWidth, FontSize);
+            RoundedRectangleDesignerItemData data = new RoundedRectangleDesignerItemData(Radius, StrokeThickness, Stroke, Text, ItemHeight, ItemWidth, FontSize);
             if (visualiserService.ShowDialog(data) == true)
             {
                 Text = data.Text;
@@ -78,6 +85,9 @@ namespace DiagramDesigner
 
                 Stroke = data.Stroke;
                 OnPropertyChanged("Stroke");
+
+                Radius = data.Radius;
+                OnPropertyChanged("Radius");
             }
 
         }
