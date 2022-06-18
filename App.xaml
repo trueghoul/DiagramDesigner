@@ -24,6 +24,7 @@
                 <ResourceDictionary Source="Resources/DesignerItems/TextBoxDesignerItemDataTemplate.xaml" />
                 <ResourceDictionary Source="Resources/DesignerItems/GroupingDesignerItemDataTemplate.xaml" />
                 <ResourceDictionary Source="Resources/DesignerItems/ParallelogramDesignerItemDataTemplate.xaml" />
+                <ResourceDictionary Source="Resources/DesignerItems/EllipseDesignerItemDataTemplate.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

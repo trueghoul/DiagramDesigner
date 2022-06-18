@@ -138,7 +138,7 @@
                                                     Canvas.Left="{Binding EndPoint.X}"
                                                     Canvas.Top="{Binding EndPoint.Y}"
                                                     Stretch="Fill"
-                                                    Stroke="Gray"
+                                                    Stroke="Black"
                                                     VerticalAlignment="Top"
                                                     Width="10"
                                                     RenderTransformOrigin="0.5,0.5">

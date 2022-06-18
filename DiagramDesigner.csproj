@@ -165,6 +165,8 @@
     <Compile Include="ViewModels\FullyCreatedConnectorInfo.cs" />
     <Compile Include="ViewModels\Interfaces\IDiagramViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\ISupportDataChanges.cs" />
+    <Compile Include="ViewModels\Items\EllipseDesignerItemData.cs" />
+    <Compile Include="ViewModels\Items\EllipseDesignerItemViewModel.cs" />
     <Compile Include="ViewModels\Items\GroupingDesignerItemData.cs" />
     <Compile Include="ViewModels\Items\GroupingDesignerItemViewModel.cs" />
     <Compile Include="ViewModels\Items\ParallelogramDesignerItemData.cs" />
@@ -203,6 +205,10 @@
     <Compile Include="Helpers\ToolBoxData.cs" />
     <Compile Include="Helpers\WeakINPCEventHandler.cs" />
     <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\DesignerItems\EllipseDesignerItemDataTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -376,6 +382,15 @@
   <ItemGroup>
     <Resource Include="Resources\Images\cicledown.png" />
     <Resource Include="Resources\Images\cicleup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\router.png" />
+    <Resource Include="Resources\Images\switch.png" />
+    <Resource Include="Resources\Images\web-browser.png" />
+    <Resource Include="Resources\Images\workstation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\addnewplus.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\System.Text.Json.6.0.5\build\System.Text.Json.targets" Condition="Exists('packages\System.Text.Json.6.0.5\build\System.Text.Json.targets')" />

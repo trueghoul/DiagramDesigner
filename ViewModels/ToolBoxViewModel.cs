@@ -12,6 +12,7 @@ namespace DiagramDesigner
     public class ToolBoxViewModel
     {
         private ObservableCollection<ToolBoxData> _blockDiagram = new ObservableCollection<ToolBoxData>();
+        private ObservableCollection<ToolBoxData> _cisco = new ObservableCollection<ToolBoxData>();
         private ObservableCollection<ToolBoxData> _customElements = new ObservableCollection<ToolBoxData>();
 
         private const string Directory = "/Resources/Images/";
@@ -25,11 +26,16 @@ namespace DiagramDesigner
             _blockDiagram.Add(new ToolBoxData(Directory + "Rectangle.png", typeof(RectangleDesignerItemViewModel), null));
             _blockDiagram.Add(new ToolBoxData(Directory + "Parallelo.png", typeof(ParallelogramDesignerItemViewModel), null));
             _blockDiagram.Add(new ToolBoxData(Directory + "roundedRec.png", typeof(RoundedRectangleDesignerItemViewModel), 20));
-            _blockDiagram.Add(new ToolBoxData(Directory + "Ellipse.png", typeof(RoundedRectangleDesignerItemViewModel), 40));
-            _blockDiagram.Add(new ToolBoxData(Directory + "Circle.png", typeof(RoundedRectangleDesignerItemViewModel), 9999));
+            _blockDiagram.Add(new ToolBoxData(Directory + "Ellipse.png", typeof(EllipseDesignerItemViewModel), 40));
+            _blockDiagram.Add(new ToolBoxData(Directory + "Circle.png", typeof(EllipseDesignerItemViewModel), 9999));
             _blockDiagram.Add(new ToolBoxData(Directory + "Rhombus.png", typeof(UniversalDesignerItemViewModel), null));
             _blockDiagram.Add(new ToolBoxData(Directory + "cicleup.png", typeof(UniversalDesignerItemViewModel), null));
             _blockDiagram.Add(new ToolBoxData(Directory + "cicledown.png", typeof(UniversalDesignerItemViewModel), null));
+
+            _cisco.Add(new ToolBoxData(Directory + "router.png", typeof(UniversalDesignerItemViewModel), null));
+            _cisco.Add(new ToolBoxData(Directory + "switch.png", typeof(UniversalDesignerItemViewModel), null));
+            _cisco.Add(new ToolBoxData(Directory + "web-browser.png", typeof(UniversalDesignerItemViewModel), null));
+            _cisco.Add(new ToolBoxData(Directory + "workstation.png", typeof(UniversalDesignerItemViewModel), null));
 
         }
         private void ExecuteAddItemCommand(object parametr)
@@ -61,6 +67,10 @@ namespace DiagramDesigner
         public ObservableCollection<ToolBoxData> CustomElements
         {
             get { return _customElements; }
+        }
+        public ObservableCollection<ToolBoxData> Cisco
+        {
+            get { return _cisco; }
         }
     }
 }

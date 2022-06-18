@@ -57,6 +57,53 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Expander>
+            <Expander Header="CISCO"
+                      IsExpanded="True">
+                <ItemsControl ItemsSource="{Binding Cisco}">
+                    <ItemsControl.Template>
+                        <ControlTemplate TargetType="{x:Type ItemsControl}">
+                            <Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                    Padding="{TemplateBinding Control.Padding}"
+                                    BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                    Background="{TemplateBinding Panel.Background}"
+                                    SnapsToDevicePixels="True">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                </ScrollViewer>
+                            </Border>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Margin="0,5,0,5"
+                                       ItemHeight="50"
+                                       ItemWidth="50" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="{x:Type ContentPresenter}">
+                            <Setter Property="ContentControl.Padding"
+                                    Value="10" />
+                            <Setter Property="ContentControl.HorizontalContentAlignment"
+                                    Value="Stretch" />
+                            <Setter Property="ContentControl.VerticalContentAlignment"
+                                    Value="Stretch" />
+                            <Setter Property="s:DragAndDropProps.EnabledForDrag"
+                                    Value="True" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Image IsHitTestVisible="True"
+                                   Margin="2,2,3,2"
+                                   Stretch="Fill"
+                                   Width="40"
+                                   Height="40"
+                                   Source="{Binding ImageUrl, Converter={x:Static s:ImageUrlConverter.Instance}}"></Image>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Expander>
             <Expander Header="Пользовательские элементы"
                       IsExpanded="False">
                 <ItemsControl ItemsSource="{Binding CustomElements}">
@@ -96,15 +143,23 @@
                         <DataTemplate>
                             <Image IsHitTestVisible="True"
                                    Stretch="Fill"
-                                   Width="50"
-                                   Height="50"
+                                   Margin="2,2,3,2"
+                                   Width="40"
+                                   Height="40"
                                    Source="{Binding ImageUrl, Converter={x:Static s:ImageUrlConverter.Instance}}"></Image>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Expander>
-            <Button Content="Добавить"
-                    Command="{Binding AddItemCommand}"></Button>
+            <Button Margin="0,3,0,0" Background="White" MaxWidth="50" Width="25" Height="25" MaxHeight="50"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    FontSize="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Command="{Binding AddItemCommand}">
+                <Image Source="../Images/Icons/addnewplus.ico"></Image>
+            </Button>
         </StackPanel>
     </Border>
 </UserControl>

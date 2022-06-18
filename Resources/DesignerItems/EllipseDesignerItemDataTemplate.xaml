@@ -3,11 +3,11 @@
                     xmlns:local="clr-namespace:DiagramDesigner" 
                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                     xmlns:System="clr-namespace:System;assembly=mscorlib">
-    
+
     <!-- DataTemplate for DesignerCanvas look and feel -->
-    <DataTemplate DataType="{x:Type local:RectangleDesignerItemViewModel}">
+    <DataTemplate DataType="{x:Type local:EllipseDesignerItemViewModel}">
         <Grid>
-            <Rectangle Width="{Binding ItemWidth}"
+            <Ellipse Width="{Binding ItemWidth}"
                        Height="{Binding ItemHeight}"
                        Stretch="Fill"
                        StrokeLineJoin="Round"
@@ -15,7 +15,7 @@
                        SnapsToDevicePixels="True"
                        Stroke="{Binding Stroke}"
                        StrokeThickness="{Binding StrokeThickness}">
-            </Rectangle>
+            </Ellipse>
             <TextBox Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
@@ -31,10 +31,10 @@
                     Template="{StaticResource infoButtonTemplate}"
                     Command="{Binding ShowDataChangeWindowCommand}" />
         </Grid>
-        
+
     </DataTemplate>
     <!-- DataTemplate for Popup look and feel -->
-    <DataTemplate DataType="{x:Type local:RectangleDesignerItemData}">
+    <DataTemplate DataType="{x:Type local:EllipseDesignerItemData}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -93,20 +93,20 @@
                     Width="150"
                     Margin="5" />
             <Label Grid.Column="0"
-                   Grid.Row="5"
+                   Grid.Row="4"
                    Content="Цвет"
                    Margin="5" />
-            <xctk:ColorPicker Name ="cp" Grid.Column="1" Grid.Row ="5"
+            <xctk:ColorPicker Name ="cp" Grid.Column="1" Grid.Row ="4"
                               DisplayColorAndName="True"
                               SelectedColor="{Binding Stroke, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
                 Converter={x:Static local:ColorPickerConverter.Instance}}"
                               AvailableColorsSortingMode="HueSaturationBrightness">
             </xctk:ColorPicker>
             <Label Grid.Column="0"
-                   Grid.Row="4"
+                   Grid.Row="5"
                    Content="Толщина"
                    Margin="5" />
-            <TextBox Grid.Row="4"
+            <TextBox Grid.Row="5"
                     Grid.Column="1"
                     HorizontalAlignment="Left"
                     Text="{Binding StrokeThickness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -114,5 +114,5 @@
                     Margin="5" />
         </Grid>
     </DataTemplate>
-    
+
 </ResourceDictionary>

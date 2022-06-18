@@ -62,9 +62,9 @@
                     Command="{Binding CreateNewDiagramCommand}">
                 <Image Source="/Resources/Images/Icons/new.ico"></Image>
             </Button>
-            <Button ToolTip="Создать"
+            <Button ToolTip="Открыть"
 					Margin="8,0,3,0"
-                    Command="{Binding CreateNewDiagramCommand}">
+                    Command="{Binding LoadDiagramCommand}">
                 <Image Source="/Resources/Images/Icons/open.ico"></Image>
             </Button>
             <Button ToolTip="Сохранить"

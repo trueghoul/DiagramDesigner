@@ -12,6 +12,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Text.Json;
 using System.Windows.Input;
+using Microsoft.Win32;
+using System.IO;
 
 namespace DiagramDesigner
 {
@@ -41,7 +43,7 @@ namespace DiagramDesigner
             DeleteSelectedItemsCommand = new SimpleCommand(ExecuteDeleteSelectedItemsCommand);
             CreateNewDiagramCommand = new SimpleCommand(ExecuteCreateNewDiagramCommand);
             SaveDiagramCommand = new SimpleCommand(ExecuteSaveDiagramCommand);
-            //LoadDiagramCommand = new SimpleCommand(ExecuteLoadDiagramCommand);
+            LoadDiagramCommand = new SimpleCommand(ExecuteLoadDiagramCommand);
             GroupCommand = new SimpleCommand(ExecuteGroupCommand);
             DeselectCommand = new SimpleCommand(ExecuteDeselectCommand);
 
@@ -55,7 +57,7 @@ namespace DiagramDesigner
         public SimpleCommand SaveDiagramCommand { get; private set; }
         public SimpleCommand GroupCommand { get; private set; }
         public SimpleCommand DeselectCommand { get; private set; }
-        //public SimpleCommand LoadDiagramCommand { get; private set; }
+        public SimpleCommand LoadDiagramCommand { get; private set; }
         public ToolBoxViewModel ToolBoxViewModel { get; private set; }
 
 
@@ -298,252 +300,275 @@ namespace DiagramDesigner
         }
         private void ExecuteSaveDiagramCommand(object parameter)
         {
+            if (!DiagramViewModel.Items.Any())
+            {
+                messageBoxService.ShowError("Расположите хотя бы один элемент на диаграмме, чтобы сохранить её.");
+                return;
+            }
             var univer = DiagramViewModel.Items.First();
+            string jsonString = "";
             if (univer is UniversalDesignerItemViewModel)
             {
                 UniversalDesignerItemViewModel _univer = univer as UniversalDesignerItemViewModel;
                 UniversalDesignerItem item = new UniversalDesignerItem(_univer.Id, _univer.Left, _univer.Top, _univer.ItemWidth,
                     _univer.ItemHeight, _univer.Text, _univer.FontSize, _univer.ImageUrl);
-                string jsonString = JsonSerializer.Serialize(item);
+                jsonString = JsonSerializer.Serialize(item);
             }
-        }
-
-        /*
-        private void ExecuteSaveDiagramCommand(object parameter)
-        {
-            if (!DiagramViewModel.Items.Any())
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt";
+            saveFileDialog.Title = "Сохранение";
+            if (saveFileDialog.ShowDialog() == true)
             {
-                messageBoxService.ShowError("There must be at least one item in order save a diagram");
-                return;
-            }
-
-            IsBusy = true;
-            DiagramItem wholeDiagramToSave = null;
-
-            Task<int> task = Task.Factory.StartNew<int>(() =>
-            {
-
-                if (SavedDiagramId != null)
-                {
-                    int currentSavedDiagramId = (int)SavedDiagramId.Value;
-                    wholeDiagramToSave = databaseAccessService.FetchDiagram(currentSavedDiagramId);
-
-                    //If we have a saved diagram, we need to make sure we clear out all the removed items that
-                    //the user deleted as part of this work sesssion
-                    foreach (var itemToRemove in itemsToRemove)
-                    {
-                        DeleteFromDatabase(wholeDiagramToSave, itemToRemove);
-                    }
-                    //start with empty collections of connections and items, which will be populated based on current diagram
-                    wholeDiagramToSave.ConnectionIds = new List<int>();
-                    wholeDiagramToSave.DesignerItems = new List<DiagramItemData>();
-                }
-                else
-                {
-                    wholeDiagramToSave = new DiagramItem();
-                }
-
-                //ensure that itemsToRemove is cleared ready for any new changes within a session
-                itemsToRemove = new List<SelectableDesignerItemViewModelBase>();
-
-                SavePersistDesignerItem(wholeDiagramToSave, DiagramViewModel);
-
-                wholeDiagramToSave.Id = databaseAccessService.SaveDiagram(wholeDiagramToSave);
-                return wholeDiagramToSave.Id;
-            });
-            task.ContinueWith((ant) =>
-            {
-                int wholeDiagramToSaveId = ant.Result;
-                if (!savedDiagrams.Contains(wholeDiagramToSaveId))
-                {
-                    List<int> newDiagrams = new List<int>(savedDiagrams);
-                    newDiagrams.Add(wholeDiagramToSaveId);
-                    SavedDiagrams = newDiagrams;
-
-                }
-                IsBusy = false;
-                messageBoxService.ShowInformation(string.Format("Finished saving Diagram Id : {0}", wholeDiagramToSaveId));
-
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
-        }
-
-        private void SavePersistDesignerItem(IDiagramItem wholeDiagramToSave, IDiagramViewModel diagramViewModel)
-        {
-            //Save all RhombusDesignerItemViewModel
-            foreach (var universalItemVM in diagramViewModel.Items.OfType<UniversalDesignerItemViewModel>())
-            {
-                UniversalDesignerItem universalDesignerItem = new UniversalDesignerItem(universalItemVM.Id, universalItemVM.Left, universalItemVM.Top,
-                    universalItemVM.ItemWidth, universalItemVM.ItemHeight, universalItemVM.Text, universalItemVM.FontSize);
-
-                universalItemVM.Id = databaseAccessService.SaveRhombusDesignerItem(rhombusDesignerItem);
-                wholeDiagramToSave.DesignerItems.Add(new DiagramItemData(rhombusDesignerItem.Id, typeof(SettingsDesignerItem)));
-            }
-            //Save all GroupingDesignerItemViewModel
-            foreach (var groupingItemVM in diagramViewModel.Items.OfType<GroupingDesignerItemViewModel>())
-            {
-                GroupDesignerItem groupDesignerItem = new GroupDesignerItem(groupingItemVM.Id, groupingItemVM.Left, groupingItemVM.Top, groupingItemVM.ItemWidth, groupingItemVM.ItemHeight);
-                if(groupingItemVM.Items != null && groupingItemVM.Items.Count > 0)
-                {
-                    SavePersistDesignerItem(groupDesignerItem, groupingItemVM);
-                }
-                groupingItemVM.Id = databaseAccessService.SaveGroupingDesignerItem(groupDesignerItem);
-                wholeDiagramToSave.DesignerItems.Add(new DiagramItemData(groupDesignerItem.Id, typeof(GroupDesignerItem)));
-            }
-            //Save all connections which should now have their Connection.DataItems filled in with correct Ids
-            foreach (var connectionVM in diagramViewModel.Items.OfType<ConnectorViewModel>())
-            {
-                FullyCreatedConnectorInfo sinkConnector = connectionVM.SinkConnectorInfo as FullyCreatedConnectorInfo;
-
-                Connection connection = new Connection(
-                    connectionVM.Id,
-                    connectionVM.SourceConnectorInfo.DataItem.Id,
-                    GetOrientationFromConnector(connectionVM.SourceConnectorInfo.Orientation),
-                    GetTypeOfDiagramItem(connectionVM.SourceConnectorInfo.DataItem),
-                    sinkConnector.DataItem.Id,
-                    GetOrientationFromConnector(sinkConnector.Orientation),
-                    GetTypeOfDiagramItem(sinkConnector.DataItem));
-
-                connectionVM.Id = databaseAccessService.SaveConnection(connection);
-                wholeDiagramToSave.ConnectionIds.Add(connectionVM.Id);
+                File.WriteAllText(saveFileDialog.FileName, jsonString);
             }
         }
         private void ExecuteLoadDiagramCommand(object parameter)
         {
-            IsBusy = true;
-            DiagramItem wholeDiagramToLoad = null;
-            if (SavedDiagramId == null)
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt";
+            openFileDialog.Title = "Открыть диаграмму";
+            if (openFileDialog.ShowDialog() == true)
             {
-                messageBoxService.ShowError("You need to select a diagram to load");
-                return;
+
             }
-
-            Task<DiagramViewModel> task = Task.Factory.StartNew<DiagramViewModel>(() =>
-            {
-                //ensure that itemsToRemove is cleared ready for any new changes within a session
-                itemsToRemove = new List<SelectableDesignerItemViewModelBase>();
-                DiagramViewModel diagramViewModel = new DiagramViewModel();
-
-                wholeDiagramToLoad = databaseAccessService.FetchDiagram((int)SavedDiagramId.Value);
-
-                LoadPerstistDesignerItems(wholeDiagramToLoad, diagramViewModel);
-
-                return diagramViewModel;
-            });
-            task.ContinueWith((ant) =>
-            {
-                this.DiagramViewModel = ant.Result;
-                IsBusy = false;
-                messageBoxService.ShowInformation(string.Format("Finished loading Diagram Id : {0}", wholeDiagramToLoad.Id));
-
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
-        private void LoadPerstistDesignerItems(IDiagramItem wholeDiagramToLoad, IDiagramViewModel diagramViewModel)
-        {
-            //load diagram items
-            foreach (DiagramItemData diagramItemData in wholeDiagramToLoad.DesignerItems)
+
+            /*
+            private void ExecuteSaveDiagramCommand(object parameter)
             {
-                if (diagramItemData.ItemType == typeof(RhombusDesignerItem))
+                if (!DiagramViewModel.Items.Any())
                 {
-                    RhombusDesignerItem rhombusDesignerItem = databaseAccessService.FetchRhombusDesignerItem(diagramItemData.ItemId);
-                    RhombusDesignerItemViewModel rhombusDesignerItemViewModel =
-                        new RhombusDesignerItemViewModel(rhombusDesignerItem.Id, diagramViewModel, rhombusDesignerItem.Left, rhombusDesignerItem.Top, rhombusDesignerItem.ItemWidth, rhombusDesignerItem.ItemHeight, rhombusDesignerItem.Text);
-                    diagramViewModel.Items.Add(rhombusDesignerItemViewModel);
+                    messageBoxService.ShowError("There must be at least one item in order save a diagram");
+                    return;
                 }
-                if (diagramItemData.ItemType == typeof(GroupDesignerItem))
+
+                IsBusy = true;
+                DiagramItem wholeDiagramToSave = null;
+
+                Task<int> task = Task.Factory.StartNew<int>(() =>
                 {
-                    GroupDesignerItem groupDesignerItem = databaseAccessService.FetchGroupingDesignerItem(diagramItemData.ItemId);
-                    GroupingDesignerItemViewModel groupingDesignerItemViewModel =
-                        new GroupingDesignerItemViewModel(groupDesignerItem.Id, diagramViewModel, groupDesignerItem.Left, groupDesignerItem.Top, groupDesignerItem.ItemWidth, groupDesignerItem.ItemHeight);
-                    if(groupDesignerItem.DesignerItems != null && groupDesignerItem.DesignerItems.Count > 0)
+
+                    if (SavedDiagramId != null)
                     {
-                        LoadPerstistDesignerItems(groupDesignerItem, groupingDesignerItemViewModel);
+                        int currentSavedDiagramId = (int)SavedDiagramId.Value;
+                        wholeDiagramToSave = databaseAccessService.FetchDiagram(currentSavedDiagramId);
+
+                        //If we have a saved diagram, we need to make sure we clear out all the removed items that
+                        //the user deleted as part of this work sesssion
+                        foreach (var itemToRemove in itemsToRemove)
+                        {
+                            DeleteFromDatabase(wholeDiagramToSave, itemToRemove);
+                        }
+                        //start with empty collections of connections and items, which will be populated based on current diagram
+                        wholeDiagramToSave.ConnectionIds = new List<int>();
+                        wholeDiagramToSave.DesignerItems = new List<DiagramItemData>();
                     }
-                    diagramViewModel.Items.Add(groupingDesignerItemViewModel);
+                    else
+                    {
+                        wholeDiagramToSave = new DiagramItem();
+                    }
+
+                    //ensure that itemsToRemove is cleared ready for any new changes within a session
+                    itemsToRemove = new List<SelectableDesignerItemViewModelBase>();
+
+                    SavePersistDesignerItem(wholeDiagramToSave, DiagramViewModel);
+
+                    wholeDiagramToSave.Id = databaseAccessService.SaveDiagram(wholeDiagramToSave);
+                    return wholeDiagramToSave.Id;
+                });
+                task.ContinueWith((ant) =>
+                {
+                    int wholeDiagramToSaveId = ant.Result;
+                    if (!savedDiagrams.Contains(wholeDiagramToSaveId))
+                    {
+                        List<int> newDiagrams = new List<int>(savedDiagrams);
+                        newDiagrams.Add(wholeDiagramToSaveId);
+                        SavedDiagrams = newDiagrams;
+
+                    }
+                    IsBusy = false;
+                    messageBoxService.ShowInformation(string.Format("Finished saving Diagram Id : {0}", wholeDiagramToSaveId));
+
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            }
+
+            private void SavePersistDesignerItem(IDiagramItem wholeDiagramToSave, IDiagramViewModel diagramViewModel)
+            {
+                //Save all RhombusDesignerItemViewModel
+                foreach (var universalItemVM in diagramViewModel.Items.OfType<UniversalDesignerItemViewModel>())
+                {
+                    UniversalDesignerItem universalDesignerItem = new UniversalDesignerItem(universalItemVM.Id, universalItemVM.Left, universalItemVM.Top,
+                        universalItemVM.ItemWidth, universalItemVM.ItemHeight, universalItemVM.Text, universalItemVM.FontSize);
+
+                    universalItemVM.Id = databaseAccessService.SaveRhombusDesignerItem(rhombusDesignerItem);
+                    wholeDiagramToSave.DesignerItems.Add(new DiagramItemData(rhombusDesignerItem.Id, typeof(SettingsDesignerItem)));
+                }
+                //Save all GroupingDesignerItemViewModel
+                foreach (var groupingItemVM in diagramViewModel.Items.OfType<GroupingDesignerItemViewModel>())
+                {
+                    GroupDesignerItem groupDesignerItem = new GroupDesignerItem(groupingItemVM.Id, groupingItemVM.Left, groupingItemVM.Top, groupingItemVM.ItemWidth, groupingItemVM.ItemHeight);
+                    if(groupingItemVM.Items != null && groupingItemVM.Items.Count > 0)
+                    {
+                        SavePersistDesignerItem(groupDesignerItem, groupingItemVM);
+                    }
+                    groupingItemVM.Id = databaseAccessService.SaveGroupingDesignerItem(groupDesignerItem);
+                    wholeDiagramToSave.DesignerItems.Add(new DiagramItemData(groupDesignerItem.Id, typeof(GroupDesignerItem)));
+                }
+                //Save all connections which should now have their Connection.DataItems filled in with correct Ids
+                foreach (var connectionVM in diagramViewModel.Items.OfType<ConnectorViewModel>())
+                {
+                    FullyCreatedConnectorInfo sinkConnector = connectionVM.SinkConnectorInfo as FullyCreatedConnectorInfo;
+
+                    Connection connection = new Connection(
+                        connectionVM.Id,
+                        connectionVM.SourceConnectorInfo.DataItem.Id,
+                        GetOrientationFromConnector(connectionVM.SourceConnectorInfo.Orientation),
+                        GetTypeOfDiagramItem(connectionVM.SourceConnectorInfo.DataItem),
+                        sinkConnector.DataItem.Id,
+                        GetOrientationFromConnector(sinkConnector.Orientation),
+                        GetTypeOfDiagramItem(sinkConnector.DataItem));
+
+                    connectionVM.Id = databaseAccessService.SaveConnection(connection);
+                    wholeDiagramToSave.ConnectionIds.Add(connectionVM.Id);
                 }
             }
-            //load connection items
-            foreach (int connectionId in wholeDiagramToLoad.ConnectionIds)
+            private void ExecuteLoadDiagramCommand(object parameter)
             {
-                Connection connection = databaseAccessService.FetchConnection(connectionId);
+                IsBusy = true;
+                DiagramItem wholeDiagramToLoad = null;
+                if (SavedDiagramId == null)
+                {
+                    messageBoxService.ShowError("You need to select a diagram to load");
+                    return;
+                }
 
-                DesignerItemViewModelBase sourceItem = GetConnectorDataItem(diagramViewModel, connection.SourceId, connection.SourceType);
-                ConnectorOrientation sourceConnectorOrientation = GetOrientationForConnector(connection.SourceOrientation);
-                FullyCreatedConnectorInfo sourceConnectorInfo = GetFullConnectorInfo(connection.Id, sourceItem, sourceConnectorOrientation);
+                Task<DiagramViewModel> task = Task.Factory.StartNew<DiagramViewModel>(() =>
+                {
+                    //ensure that itemsToRemove is cleared ready for any new changes within a session
+                    itemsToRemove = new List<SelectableDesignerItemViewModelBase>();
+                    DiagramViewModel diagramViewModel = new DiagramViewModel();
 
-                DesignerItemViewModelBase sinkItem = GetConnectorDataItem(diagramViewModel, connection.SinkId, connection.SinkType);
-                ConnectorOrientation sinkConnectorOrientation = GetOrientationForConnector(connection.SinkOrientation);
-                FullyCreatedConnectorInfo sinkConnectorInfo = GetFullConnectorInfo(connection.Id, sinkItem, sinkConnectorOrientation);
+                    wholeDiagramToLoad = databaseAccessService.FetchDiagram((int)SavedDiagramId.Value);
 
-                ConnectorViewModel connectionVM = new ConnectorViewModel(connection.Id, diagramViewModel, sourceConnectorInfo, sinkConnectorInfo);
-                diagramViewModel.Items.Add(connectionVM);
+                    LoadPerstistDesignerItems(wholeDiagramToLoad, diagramViewModel);
+
+                    return diagramViewModel;
+                });
+                task.ContinueWith((ant) =>
+                {
+                    this.DiagramViewModel = ant.Result;
+                    IsBusy = false;
+                    messageBoxService.ShowInformation(string.Format("Finished loading Diagram Id : {0}", wholeDiagramToLoad.Id));
+
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
             }
-        }
-
-        private FullyCreatedConnectorInfo GetFullConnectorInfo(int connectorId, DesignerItemViewModelBase dataItem, ConnectorOrientation connectorOrientation)
-        {
-            switch (connectorOrientation)
+            private void LoadPerstistDesignerItems(IDiagramItem wholeDiagramToLoad, IDiagramViewModel diagramViewModel)
             {
-                case ConnectorOrientation.Top:
-                    return dataItem.TopConnector;
-                case ConnectorOrientation.Left:
-                    return dataItem.LeftConnector;
-                case ConnectorOrientation.Right:
-                    return dataItem.RightConnector;
-                case ConnectorOrientation.Bottom:
-                    return dataItem.BottomConnector;
+                //load diagram items
+                foreach (DiagramItemData diagramItemData in wholeDiagramToLoad.DesignerItems)
+                {
+                    if (diagramItemData.ItemType == typeof(RhombusDesignerItem))
+                    {
+                        RhombusDesignerItem rhombusDesignerItem = databaseAccessService.FetchRhombusDesignerItem(diagramItemData.ItemId);
+                        RhombusDesignerItemViewModel rhombusDesignerItemViewModel =
+                            new RhombusDesignerItemViewModel(rhombusDesignerItem.Id, diagramViewModel, rhombusDesignerItem.Left, rhombusDesignerItem.Top, rhombusDesignerItem.ItemWidth, rhombusDesignerItem.ItemHeight, rhombusDesignerItem.Text);
+                        diagramViewModel.Items.Add(rhombusDesignerItemViewModel);
+                    }
+                    if (diagramItemData.ItemType == typeof(GroupDesignerItem))
+                    {
+                        GroupDesignerItem groupDesignerItem = databaseAccessService.FetchGroupingDesignerItem(diagramItemData.ItemId);
+                        GroupingDesignerItemViewModel groupingDesignerItemViewModel =
+                            new GroupingDesignerItemViewModel(groupDesignerItem.Id, diagramViewModel, groupDesignerItem.Left, groupDesignerItem.Top, groupDesignerItem.ItemWidth, groupDesignerItem.ItemHeight);
+                        if(groupDesignerItem.DesignerItems != null && groupDesignerItem.DesignerItems.Count > 0)
+                        {
+                            LoadPerstistDesignerItems(groupDesignerItem, groupingDesignerItemViewModel);
+                        }
+                        diagramViewModel.Items.Add(groupingDesignerItemViewModel);
+                    }
+                }
+                //load connection items
+                foreach (int connectionId in wholeDiagramToLoad.ConnectionIds)
+                {
+                    Connection connection = databaseAccessService.FetchConnection(connectionId);
 
-                default:
-                    throw new InvalidOperationException(
-                        string.Format("Обнаружена ошибочная ореинтация коннектора с Id: {0}", connectorId));
+                    DesignerItemViewModelBase sourceItem = GetConnectorDataItem(diagramViewModel, connection.SourceId, connection.SourceType);
+                    ConnectorOrientation sourceConnectorOrientation = GetOrientationForConnector(connection.SourceOrientation);
+                    FullyCreatedConnectorInfo sourceConnectorInfo = GetFullConnectorInfo(connection.Id, sourceItem, sourceConnectorOrientation);
+
+                    DesignerItemViewModelBase sinkItem = GetConnectorDataItem(diagramViewModel, connection.SinkId, connection.SinkType);
+                    ConnectorOrientation sinkConnectorOrientation = GetOrientationForConnector(connection.SinkOrientation);
+                    FullyCreatedConnectorInfo sinkConnectorInfo = GetFullConnectorInfo(connection.Id, sinkItem, sinkConnectorOrientation);
+
+                    ConnectorViewModel connectionVM = new ConnectorViewModel(connection.Id, diagramViewModel, sourceConnectorInfo, sinkConnectorInfo);
+                    diagramViewModel.Items.Add(connectionVM);
+                }
             }
-        }
 
-        private Type GetTypeOfDiagramItem(DesignerItemViewModelBase vmType)
-        {
-            if (vmType is UniversalDesignerItemViewModel)
-                return typeof(UniversalDesignerItem);
-            if (vmType is GroupingDesignerItemViewModel)
-                return typeof(GroupDesignerItem);
-            throw new InvalidOperationException(string.Format("Элемент неизвестного типа."));
-
-        }
-
-        private DesignerItemViewModelBase GetConnectorDataItem(IDiagramViewModel diagramViewModel, int conectorDataItemId, Type connectorDataItemType)
-        {
-            DesignerItemViewModelBase dataItem = null;
-
-            if (connectorDataItemType == typeof(UniversalDesignerItem))
+            private FullyCreatedConnectorInfo GetFullConnectorInfo(int connectorId, DesignerItemViewModelBase dataItem, ConnectorOrientation connectorOrientation)
             {
-                dataItem = diagramViewModel.Items.OfType<UniversalDesignerItemViewModel>().Single(x => x.Id == conectorDataItemId);
+                switch (connectorOrientation)
+                {
+                    case ConnectorOrientation.Top:
+                        return dataItem.TopConnector;
+                    case ConnectorOrientation.Left:
+                        return dataItem.LeftConnector;
+                    case ConnectorOrientation.Right:
+                        return dataItem.RightConnector;
+                    case ConnectorOrientation.Bottom:
+                        return dataItem.BottomConnector;
+
+                    default:
+                        throw new InvalidOperationException(
+                            string.Format("Обнаружена ошибочная ореинтация коннектора с Id: {0}", connectorId));
+                }
             }
 
-            if (connectorDataItemType == typeof(GroupDesignerItem))
+            private Type GetTypeOfDiagramItem(DesignerItemViewModelBase vmType)
             {
-                dataItem = diagramViewModel.Items.OfType<GroupingDesignerItemViewModel>().Single(x => x.Id == conectorDataItemId);
-            }
-            return dataItem;
-        }
+                if (vmType is UniversalDesignerItemViewModel)
+                    return typeof(UniversalDesignerItem);
+                if (vmType is GroupingDesignerItemViewModel)
+                    return typeof(GroupDesignerItem);
+                throw new InvalidOperationException(string.Format("Элемент неизвестного типа."));
 
-        private ConnectorOrientation GetOrientationForConnector(Orientation persistedOrientation)
-        {
-            ConnectorOrientation result = ConnectorOrientation.None;
-            switch (persistedOrientation)
-            {
-                case Orientation.Bottom:
-                    result = ConnectorOrientation.Bottom;
-                    break;
-                case Orientation.Left:
-                    result = ConnectorOrientation.Left;
-                    break;
-                case Orientation.Top:
-                    result = ConnectorOrientation.Top;
-                    break;
-                case Orientation.Right:
-                    result = ConnectorOrientation.Right;
-                    break;
             }
-            return result;
+
+            private DesignerItemViewModelBase GetConnectorDataItem(IDiagramViewModel diagramViewModel, int conectorDataItemId, Type connectorDataItemType)
+            {
+                DesignerItemViewModelBase dataItem = null;
+
+                if (connectorDataItemType == typeof(UniversalDesignerItem))
+                {
+                    dataItem = diagramViewModel.Items.OfType<UniversalDesignerItemViewModel>().Single(x => x.Id == conectorDataItemId);
+                }
+
+                if (connectorDataItemType == typeof(GroupDesignerItem))
+                {
+                    dataItem = diagramViewModel.Items.OfType<GroupingDesignerItemViewModel>().Single(x => x.Id == conectorDataItemId);
+                }
+                return dataItem;
+            }
+
+            private ConnectorOrientation GetOrientationForConnector(Orientation persistedOrientation)
+            {
+                ConnectorOrientation result = ConnectorOrientation.None;
+                switch (persistedOrientation)
+                {
+                    case Orientation.Bottom:
+                        result = ConnectorOrientation.Bottom;
+                        break;
+                    case Orientation.Left:
+                        result = ConnectorOrientation.Left;
+                        break;
+                    case Orientation.Top:
+                        result = ConnectorOrientation.Top;
+                        break;
+                    case Orientation.Right:
+                        result = ConnectorOrientation.Right;
+                        break;
+                }
+                return result;
+            }
+            */
         }
-        */
-    }
 }
