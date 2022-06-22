@@ -7,7 +7,7 @@ namespace DiagramDesigner.Persistence.Commons
 {
     public abstract class DesignerItemBase : PersistableItemBase
     {
-        public DesignerItemBase(int id, double left, double top, double itemWidth, double itemHeight, string imgUrl) : base(id)
+        public DesignerItemBase(Guid id, double left, double top, double itemWidth, double itemHeight, string imgUrl) : base(id)
         {
             this.Left = left;
             this.Top = top;

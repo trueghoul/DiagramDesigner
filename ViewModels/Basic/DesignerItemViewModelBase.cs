@@ -20,7 +20,7 @@ namespace DiagramDesigner
         private double itemWidth = 80;
         private double itemHeight = 80;
 
-        public DesignerItemViewModelBase(int id, IDiagramViewModel parent, double left, double top) 
+        public DesignerItemViewModelBase(Guid id, IDiagramViewModel parent, double left, double top) 
             : base(id, parent)
         {
             this.left = left;
@@ -28,7 +28,7 @@ namespace DiagramDesigner
             Init();
         }
 
-        public DesignerItemViewModelBase(int id, IDiagramViewModel parent, double left, double top, string imageUrl)
+        public DesignerItemViewModelBase(Guid id, IDiagramViewModel parent, double left, double top, string imageUrl)
     : base(id, parent)
         {
             ImageUrl = imageUrl;
@@ -37,7 +37,7 @@ namespace DiagramDesigner
             Init();
         }
 
-        public DesignerItemViewModelBase(int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight) 
+        public DesignerItemViewModelBase(Guid id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight) 
             : base(id, parent)
         {
             this.left = left;

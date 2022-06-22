@@ -24,7 +24,6 @@ namespace DiagramDesigner
                 double minLeft = double.MaxValue;
                 double minTop = double.MaxValue;
 
-                // we only move DesignerItems
                 var designerItems = designerItem.SelectedItems;
 
                 foreach (DesignerItemViewModelBase item in designerItems.OfType<DesignerItemViewModelBase>())
@@ -39,7 +38,6 @@ namespace DiagramDesigner
                     item.Left += deltaHorizontal;
                     item.Top += deltaVertical;
 
-                    // prevent dragging items out of groupitem
                     if (item.Parent is IDiagramViewModel && item.Parent is DesignerItemViewModelBase)
                     {
                         DesignerItemViewModelBase groupItem = (DesignerItemViewModelBase)item.Parent;

@@ -5,12 +5,6 @@ using System.Windows.Controls;
 
 namespace DiagramDesigner
 {
-    // Note: I couldn't find a useful open source library that does
-    // orthogonal routing so started to write something on my own.
-    // Categorize this as a quick and dirty short term solution.
-    // I will keep on searching.
-
-    // Helper class to provide an orthogonal connection path
     public class OrthogonalPathFinder : IPathFinder
     {
         private const double margin = 2.5;
@@ -292,13 +286,11 @@ namespace DiagramDesigner
                     ConnectorOrientation orientationFrom;
                     ConnectorOrientation orientationTo;
 
-                    // orientation from point
                     if (j == 0)
                         orientationFrom = sourceOrientation;
                     else
                         orientationFrom = GetOrientation(points[j], points[j - 1]);
 
-                    // orientation to pint 
                     if (j == points.Count - 2)
                         orientationTo = sinkOrientation;
                     else
@@ -385,7 +377,7 @@ namespace DiagramDesigner
 
         private static Point GetNearestNeighborSource(ConnectorInfo source, Point endPoint, Rect rectSource, Rect rectSink, out bool flag)
         {
-            Point n1, n2; // neighbors
+            Point n1, n2;
             GetNeighborCorners(source.Orientation, rectSource, out n1, out n2);
 
             if (rectSink.Contains(n1))
@@ -414,7 +406,7 @@ namespace DiagramDesigner
 
         private static Point GetNearestNeighborSource(ConnectorInfo source, Point endPoint, Rect rectSource, out bool flag)
         {
-            Point n1, n2; // neighbors
+            Point n1, n2;
             GetNeighborCorners(source.Orientation, rectSource, out n1, out n2);
 
             if ((Distance(n1, endPoint) <= Distance(n2, endPoint)))
@@ -431,15 +423,15 @@ namespace DiagramDesigner
 
         private static Point GetNearestVisibleNeighborSink(Point currentPoint, Point endPoint, ConnectorInfo sink, Rect rectSource, Rect rectSink)
         {
-            Point s1, s2; // neighbors on sink side
+            Point s1, s2;
             GetNeighborCorners(sink.Orientation, rectSink, out s1, out s2);
 
             bool flag1 = IsPointVisible(currentPoint, s1, new Rect[] { rectSource, rectSink });
             bool flag2 = IsPointVisible(currentPoint, s2, new Rect[] { rectSource, rectSink });
 
-            if (flag1) // s1 visible
+            if (flag1)
             {
-                if (flag2) // s1 and s2 visible
+                if (flag2)
                 {
                     if (rectSink.Contains(s1))
                         return s2;
@@ -458,13 +450,13 @@ namespace DiagramDesigner
                     return s1;
                 }
             }
-            else // s1 not visible
+            else
             {
-                if (flag2) // only s2 visible
+                if (flag2)
                 {
                     return s2;
                 }
-                else // s1 and s2 not visible
+                else
                 {
                     return new Point(double.NaN, double.NaN);
                 }

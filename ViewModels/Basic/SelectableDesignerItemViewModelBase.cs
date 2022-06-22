@@ -9,7 +9,7 @@ namespace DiagramDesigner
 
     public interface ISelectItems
     {
-        SimpleCommand SelectItemCommand { get;  }
+        CommandBase SelectItemCommand { get;  }
     }
 
 
@@ -17,7 +17,7 @@ namespace DiagramDesigner
     {
         private bool isSelected;
 
-        public SelectableDesignerItemViewModelBase(int id, IDiagramViewModel parent)
+        public SelectableDesignerItemViewModelBase(Guid id, IDiagramViewModel parent)
         {
             this.Id = id;
             this.Parent = parent;
@@ -35,8 +35,8 @@ namespace DiagramDesigner
         }
 
         public IDiagramViewModel Parent { get; set; }
-        public SimpleCommand SelectItemCommand { get; private set; }
-        public int Id { get; set; }
+        public CommandBase SelectItemCommand { get; private set; }
+        public Guid Id { get; set; }
 
         public bool IsSelected
         {
@@ -75,7 +75,7 @@ namespace DiagramDesigner
     
         private void Init()
         {
-            SelectItemCommand = new SimpleCommand(ExecuteSelectItemCommand);
+            SelectItemCommand = new CommandBase(ExecuteSelectItemCommand);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace DiagramDesigner
 {
-    public class SimpleCommand : ICommand
+    public class CommandBase : ICommand
     {
         /// <summary>
         /// Gets or sets the Predicate to execute when the CanExecute of the command gets called
@@ -19,13 +19,13 @@ namespace DiagramDesigner
         public Action<object> ExecuteDelegate { get; set; }
 
 
-        public SimpleCommand(Predicate<object> canExecuteDelegate, Action<object> executeDelegate)
+        public CommandBase(Predicate<object> canExecuteDelegate, Action<object> executeDelegate)
         {
             CanExecuteDelegate = canExecuteDelegate;
             ExecuteDelegate = executeDelegate;
         }
 
-        public SimpleCommand(Action<object> executeDelegate)
+        public CommandBase(Action<object> executeDelegate)
         {
             ExecuteDelegate = executeDelegate;
         }

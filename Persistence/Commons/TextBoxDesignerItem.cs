@@ -8,7 +8,7 @@ namespace DiagramDesigner.Persistence.Commons
 {
     public class TextBoxDesignerItem : DesignerItemBase
     {
-        public TextBoxDesignerItem(int id, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, string textAlign) : 
+        public TextBoxDesignerItem(Guid id, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, string textAlign) : 
             base(id, left, top, itemWidth, itemHeight, null)
         {
             Text = text;

@@ -14,15 +14,12 @@ namespace DiagramDesigner.Persistence.Commons
         void DeleteRhombusDesignerItem(int rhombusDesignerItemId);
 
         //save methods
-        int SaveDiagram(DiagramItem diagram);
         //PersistDesignerItem is pecific to the DemoApp example
         int SavePersistDesignerItem(UniversalDesignerItem persistDesignerItemToSave);
         //SettingsDesignerItem is pecific to the DemoApp example
         int SaveConnection(Connection connectionToSave);
         int SaveGroupingDesignerItem(GroupDesignerItem groupDesignerItem);
         //Fetch methods
-        IEnumerable<DiagramItem> FetchAllDiagram();
-        DiagramItem FetchDiagram(int diagramId);
         //PersistDesignerItem is pecific to the DemoApp example
         UniversalDesignerItem FetchPersistDesignerItem(int settingsDesignerItemId);
         //SettingsDesignerItem is pecific to the DemoApp example

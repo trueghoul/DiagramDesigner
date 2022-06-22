@@ -15,7 +15,7 @@ namespace DiagramDesigner
         public int FontSize { get; set; }
         public string TextAlign { get; set; }
         public ICommand ShowDataChangeWindowCommand { get; private set; }
-        public TextBoxDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, string text, int fontSize, string textAlign)
+        public TextBoxDesignerItemViewModel(Guid id, IDiagramViewModel parent, double left, double top, string text, int fontSize, string textAlign)
             : base(id, parent, left, top)
         {
             TextAlign = textAlign;
@@ -29,7 +29,7 @@ namespace DiagramDesigner
 
             Init();
         }
-        public TextBoxDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, string textAlign)
+        public TextBoxDesignerItemViewModel(Guid id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, string textAlign)
             : base(id, parent, left, top, itemWidth, itemHeight)
         {
             TextAlign = textAlign;
@@ -82,7 +82,7 @@ namespace DiagramDesigner
         private void Init()
         {
             visualiserService = ApplicationServicesProvider.Instance.Provider.VisualizerService;
-            ShowDataChangeWindowCommand = new SimpleCommand(ExecuteShowDataChangeWindowCommand);
+            ShowDataChangeWindowCommand = new CommandBase(ExecuteShowDataChangeWindowCommand);
             this.ShowConnectors = false;
 
         }

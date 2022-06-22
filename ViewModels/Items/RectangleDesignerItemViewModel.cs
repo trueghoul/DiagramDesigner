@@ -12,7 +12,7 @@ namespace DiagramDesigner
     {
         private IUIVisualizerService visualiserService;
 
-        public RectangleDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, string text, int fontSize, Brush stroke, double strokeThickness)
+        public RectangleDesignerItemViewModel(Guid id, IDiagramViewModel parent, double left, double top, string text, int fontSize, Brush stroke, double strokeThickness)
             : base(id, parent, left, top)
         {
             Stroke = stroke;
@@ -26,7 +26,7 @@ namespace DiagramDesigner
 
             Init();
         }
-        public RectangleDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, Brush stroke, double strokeThickness)
+        public RectangleDesignerItemViewModel(Guid id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, Brush stroke, double strokeThickness)
             : base(id, parent, left, top, itemWidth, itemHeight)
         {
             Stroke = stroke;
@@ -84,7 +84,7 @@ namespace DiagramDesigner
         private void Init()
         {
             visualiserService = ApplicationServicesProvider.Instance.Provider.VisualizerService;
-            ShowDataChangeWindowCommand = new SimpleCommand(ExecuteShowDataChangeWindowCommand);
+            ShowDataChangeWindowCommand = new CommandBase(ExecuteShowDataChangeWindowCommand);
             this.ShowConnectors = false;
         }
     }

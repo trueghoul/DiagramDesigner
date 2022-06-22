@@ -7,8 +7,8 @@ namespace DiagramDesigner.Persistence.Commons
 {
     public class Connection : PersistableItemBase
     {
-        public Connection(int id, int sourceId, Orientation sourceOrientation, 
-            Type sourceType, int sinkId, Orientation sinkOrientation, Type sinkType) : base(id)
+        public Connection(Guid id, Guid sourceId, Orientation sourceOrientation, 
+            string sourceType, Guid sinkId, Orientation sinkOrientation, string sinkType) : base(id)
         {
             this.SourceId = sourceId;
             this.SourceOrientation = sourceOrientation;
@@ -18,12 +18,12 @@ namespace DiagramDesigner.Persistence.Commons
             this.SinkType = sinkType;
         }
 
-        public int SourceId { get; private set; }
+        public Guid SourceId { get; private set; }
         public Orientation SourceOrientation { get; private set; }
-        public Type SourceType { get; private set; }
-        public int SinkId { get; private set; }
+        public string SourceType { get; private set; }
+        public Guid SinkId { get; private set; }
         public Orientation SinkOrientation { get; private set; }
-        public Type SinkType { get; private set; }
+        public string SinkType { get; private set; }
     }
 
 }

@@ -8,9 +8,9 @@ namespace DiagramDesigner
 {
     public interface IDiagramViewModel
     {
-        SimpleCommand AddItemCommand { get; }
-        SimpleCommand RemoveItemCommand { get;  }
-        SimpleCommand ClearSelectedItemsCommand { get;  }
+        CommandBase AddItemCommand { get; }
+        CommandBase RemoveItemCommand { get;  }
+        CommandBase ClearSelectedItemsCommand { get;  }
         List<SelectableDesignerItemViewModelBase> SelectedItems { get; }
         ObservableCollection<SelectableDesignerItemViewModelBase> Items { get; }
     }

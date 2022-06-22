@@ -142,6 +142,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Persistence\Commons\TextBoxDesignerItem.cs" />
+    <Compile Include="Persistence\Repository\JSONFileModel.cs" />
     <Compile Include="Resources\UserControls\DiagramControl.xaml.cs">
       <DependentUpon>DiagramControl.xaml</DependentUpon>
     </Compile>
@@ -180,7 +181,7 @@
     <Compile Include="ViewModels\Items\UniversalDesignerItemData.cs" />
     <Compile Include="ViewModels\Items\UniversalDesignerItemViewModel.cs" />
     <Compile Include="ViewModels\PartCreatedConnectionInfo.cs" />
-    <Compile Include="ViewModels\SimpleCommand.cs" />
+    <Compile Include="ViewModels\Basic\CommandBase.cs" />
     <Compile Include="ViewModels\ToolBoxViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="App.xaml.cs">
@@ -288,13 +289,11 @@
   <ItemGroup>
     <Compile Include="Persistence\Commons\Connection.cs" />
     <Compile Include="Persistence\Commons\DesignerItemBase.cs" />
-    <Compile Include="Persistence\Commons\DiagramItem.cs" />
     <Compile Include="Persistence\Commons\GroupDesignerItem.cs" />
     <Compile Include="Persistence\Commons\IDatabaseAccessService.cs" />
-    <Compile Include="Persistence\Commons\IDiagramItem.cs" />
     <Compile Include="Persistence\Commons\Orientation.cs" />
     <Compile Include="Persistence\Commons\UniversalDesignerItem.cs" />
-    <Compile Include="Persistence\Commons\PersitableItemBase.cs" />
+    <Compile Include="Persistence\Commons\PersistableItemBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -322,9 +321,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Persistence\Repository\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\Images\Text.png" />
   </ItemGroup>

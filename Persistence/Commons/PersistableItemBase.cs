@@ -12,11 +12,11 @@ namespace DiagramDesigner.Persistence.Commons
 
         }
 
-        public PersistableItemBase(int id)
+        public PersistableItemBase(Guid id)
         {
             this.Id = id;
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

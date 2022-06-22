@@ -14,7 +14,7 @@ namespace DiagramDesigner
         private IUIVisualizerService visualiserService;
         private ObservableCollection<SelectableDesignerItemViewModelBase> items = new ObservableCollection<SelectableDesignerItemViewModelBase>();
 
-        public GroupingDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, Brush stroke, double strokeThickness)
+        public GroupingDesignerItemViewModel(Guid id, IDiagramViewModel parent, double left, double top, Brush stroke, double strokeThickness)
             : base(id, parent, left, top)
         {
             Stroke  = stroke;
@@ -33,7 +33,7 @@ namespace DiagramDesigner
             Init();
         }
 
-        public GroupingDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, Brush stroke, double strokeThickness)
+        public GroupingDesignerItemViewModel(Guid id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, Brush stroke, double strokeThickness)
             : base(id, parent, left, top, itemWidth, itemHeight)
         {
             Stroke = stroke;
@@ -45,10 +45,10 @@ namespace DiagramDesigner
         public Brush Stroke { get; set; }
         public double StrokeThickness { get; set; }
 
-        public SimpleCommand AddItemCommand { get; private set; }
-        public SimpleCommand RemoveItemCommand { get; private set; }
-        public SimpleCommand ClearSelectedItemsCommand { get; private set; }
-        public SimpleCommand CreateNewDiagramCommand { get; private set; }
+        public CommandBase AddItemCommand { get; private set; }
+        public CommandBase RemoveItemCommand { get; private set; }
+        public CommandBase ClearSelectedItemsCommand { get; private set; }
+        public CommandBase CreateNewDiagramCommand { get; private set; }
 
         public ICommand ShowDataChangeWindowCommand { get; private set; }
 
@@ -115,12 +115,12 @@ namespace DiagramDesigner
         private void Init()
         {
             visualiserService = ApplicationServicesProvider.Instance.Provider.VisualizerService;
-            AddItemCommand = new SimpleCommand(ExecuteAddItemCommand);
-            RemoveItemCommand = new SimpleCommand(ExecuteRemoveItemCommand);
-            ClearSelectedItemsCommand = new SimpleCommand(ExecuteClearSelectedItemsCommand);
-            CreateNewDiagramCommand = new SimpleCommand(ExecuteCreateNewDiagramCommand);
+            AddItemCommand = new CommandBase(ExecuteAddItemCommand);
+            RemoveItemCommand = new CommandBase(ExecuteRemoveItemCommand);
+            ClearSelectedItemsCommand = new CommandBase(ExecuteClearSelectedItemsCommand);
+            CreateNewDiagramCommand = new CommandBase(ExecuteCreateNewDiagramCommand);
 
-            ShowDataChangeWindowCommand = new SimpleCommand(ExecuteShowDataChangeWindowCommand);
+            ShowDataChangeWindowCommand = new CommandBase(ExecuteShowDataChangeWindowCommand);
 
             this.ShowConnectors = false;
         }

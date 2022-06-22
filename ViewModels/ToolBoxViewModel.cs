@@ -16,11 +16,11 @@ namespace DiagramDesigner
         private ObservableCollection<ToolBoxData> _customElements = new ObservableCollection<ToolBoxData>();
 
         private const string Directory = "/Resources/Images/";
-        public SimpleCommand AddItemCommand { get; private set; }
+        public CommandBase AddItemCommand { get; private set; }
 
         public ToolBoxViewModel()
         {
-            AddItemCommand = new SimpleCommand(ExecuteAddItemCommand);
+            AddItemCommand = new CommandBase(ExecuteAddItemCommand);
 
             _blockDiagram.Add(new ToolBoxData(Directory + "Text.png", typeof(TextBoxDesignerItemViewModel), null));
             _blockDiagram.Add(new ToolBoxData(Directory + "Rectangle.png", typeof(RectangleDesignerItemViewModel), null));

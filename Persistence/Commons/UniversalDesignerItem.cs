@@ -7,7 +7,7 @@ namespace DiagramDesigner.Persistence.Commons
 {
     public class UniversalDesignerItem : DesignerItemBase
     {
-        public UniversalDesignerItem(int id, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, string imgUrl) 
+        public UniversalDesignerItem(Guid id, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, string imgUrl) 
             : base(id, left, top, itemWidth, itemHeight, imgUrl)
         {
             Text = text;

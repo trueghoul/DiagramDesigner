@@ -14,21 +14,19 @@ using System.Text.Json;
 using System.Windows.Input;
 using Microsoft.Win32;
 using System.IO;
+using DiagramDesigner.Persistence.Repository;
 
 namespace DiagramDesigner
 {
     public class MainWindowViewModel : ViewModelBase
     {
 
-        private List<int> savedDiagrams = new List<int>();
-
-        private int? savedDiagramId;
-
         private List<SelectableDesignerItemViewModelBase> itemsToRemove;
 
         private IMessageBoxService messageBoxService;
 
         private DiagramViewModel diagramViewModel = new DiagramViewModel();
+        private ToolBoxViewModel toolBoxViewModel = new ToolBoxViewModel();
 
         private bool isBusy = false;
 
@@ -40,26 +38,27 @@ namespace DiagramDesigner
             ToolBoxViewModel = new ToolBoxViewModel();
             DiagramViewModel = new DiagramViewModel();
 
-            DeleteSelectedItemsCommand = new SimpleCommand(ExecuteDeleteSelectedItemsCommand);
-            CreateNewDiagramCommand = new SimpleCommand(ExecuteCreateNewDiagramCommand);
-            SaveDiagramCommand = new SimpleCommand(ExecuteSaveDiagramCommand);
-            LoadDiagramCommand = new SimpleCommand(ExecuteLoadDiagramCommand);
-            GroupCommand = new SimpleCommand(ExecuteGroupCommand);
-            DeselectCommand = new SimpleCommand(ExecuteDeselectCommand);
+            DeleteSelectedItemsCommand = new CommandBase(ExecuteDeleteSelectedItemsCommand);
+            CreateNewDiagramCommand = new CommandBase(ExecuteCreateNewDiagramCommand);
+            SaveDiagramCommand = new CommandBase(ExecuteSaveDiagramCommand);
+            LoadDiagramCommand = new CommandBase(ExecuteLoadDiagramCommand);
+            GroupCommand = new CommandBase(ExecuteGroupCommand);
 
             ConnectorViewModel.PathFinder = new OrthogonalPathFinder();
 
         }
 
 
-        public SimpleCommand DeleteSelectedItemsCommand { get; private set; }
-        public SimpleCommand CreateNewDiagramCommand { get; private set; }
-        public SimpleCommand SaveDiagramCommand { get; private set; }
-        public SimpleCommand GroupCommand { get; private set; }
-        public SimpleCommand DeselectCommand { get; private set; }
-        public SimpleCommand LoadDiagramCommand { get; private set; }
-        public ToolBoxViewModel ToolBoxViewModel { get; private set; }
-
+        public CommandBase DeleteSelectedItemsCommand { get; private set; }
+        public CommandBase CreateNewDiagramCommand { get; private set; }
+        public CommandBase SaveDiagramCommand { get; private set; }
+        public CommandBase GroupCommand { get; private set; }
+        public CommandBase LoadDiagramCommand { get; private set; }
+        public ToolBoxViewModel ToolBoxViewModel
+        {
+            get { return toolBoxViewModel; }
+            set { toolBoxViewModel = value; OnPropertyChanged("ToolBoxViewModel"); }
+        }
 
         public DiagramViewModel DiagramViewModel
         {
@@ -93,45 +92,6 @@ namespace DiagramDesigner
             }
         }
 
-
-        public List<int> SavedDiagrams
-        {
-            get
-            {
-                return savedDiagrams;
-            }
-            set
-            {
-                if (savedDiagrams != value)
-                {
-                    savedDiagrams = value;
-                    OnPropertyChanged("SavedDiagrams");
-                }
-            }
-        }
-
-        public int? SavedDiagramId
-        {
-            get
-            {
-                return savedDiagramId;
-            }
-            set
-            {
-                if (savedDiagramId != value)
-                {
-                    savedDiagramId = value;
-                    OnPropertyChanged("SavedDiagramId");
-                }
-            }
-        }
-
-
-        private void ExecuteDeselectCommand(object parameter)
-        {
-            //Keyboard.ClearFocus();
-        }
-
         private void ExecuteDeleteSelectedItemsCommand(object parameter)
         {
             itemsToRemove = DiagramViewModel.SelectedItems;
@@ -159,7 +119,6 @@ namespace DiagramDesigner
         {
             if (diagramViewModel.SelectedItems.Count > 0)
             {
-                // if only one selected item is a Grouping item -> ungroup
                 if (diagramViewModel.SelectedItems[0] is GroupingDesignerItemViewModel && diagramViewModel.SelectedItems.Count == 1)
                 {
                     GroupingDesignerItemViewModel groupObject = diagramViewModel.SelectedItems[0] as GroupingDesignerItemViewModel;
@@ -175,8 +134,6 @@ namespace DiagramDesigner
                         diagramViewModel.AddItemCommand.Execute(item);
                         item.Parent = DiagramViewModel;
                     }
-
-                    // "cut" connections between DiagramItems and the Group
                     List<SelectableDesignerItemViewModelBase> GroupedItemsToRemove = new List<SelectableDesignerItemViewModelBase>();
                     foreach (var connector in DiagramViewModel.Items.OfType<ConnectorViewModel>())
                     {
@@ -202,7 +159,7 @@ namespace DiagramDesigner
                     double margin = 15;
                     Rect rekt = GetBoundingRectangle(diagramViewModel.SelectedItems, margin);
 
-                    GroupingDesignerItemViewModel groupItem = new GroupingDesignerItemViewModel(0, this.diagramViewModel, rekt.Left, rekt.Top, new SolidColorBrush(Colors.Black), 1);
+                    GroupingDesignerItemViewModel groupItem = new GroupingDesignerItemViewModel(Guid.NewGuid(), this.diagramViewModel, rekt.Left, rekt.Top, new SolidColorBrush(Colors.Black), 1);
                     groupItem.ItemWidth = rekt.Width;
                     groupItem.ItemHeight = rekt.Height;
                     foreach (var item in diagramViewModel.SelectedItems)
@@ -217,9 +174,6 @@ namespace DiagramDesigner
                         item.Parent = groupItem;
 
                     }
-
-                    // "cut" connections between DiagramItems which are going to be grouped and
-                    // Diagramitems which are not going to be grouped
                     List<SelectableDesignerItemViewModelBase> GroupedItemsToRemove = DiagramViewModel.SelectedItems;
                     List<SelectableDesignerItemViewModelBase> connectionsToAlsoRemove = new List<SelectableDesignerItemViewModelBase>();
 
@@ -248,15 +202,13 @@ namespace DiagramDesigner
             }
 
         }
-
+        private string jsonString;
         private void ExecuteCreateNewDiagramCommand(object parameter)
         {
-            //ensure that itemsToRemove is cleared ready for any new changes within a session
             itemsToRemove = new List<SelectableDesignerItemViewModelBase>();
-            SavedDiagramId = null;
             DiagramViewModel.CreateNewDiagramCommand.Execute(null);
         }
-        private static Rect GetBoundingRectangle(IEnumerable<SelectableDesignerItemViewModelBase> items, double margin)
+        private Rect GetBoundingRectangle(IEnumerable<SelectableDesignerItemViewModelBase> items, double margin)
         {
             double x1 = Double.MaxValue;
             double y1 = Double.MaxValue;
@@ -300,20 +252,38 @@ namespace DiagramDesigner
         }
         private void ExecuteSaveDiagramCommand(object parameter)
         {
+            List<UniversalDesignerItem> universalToSave = new List<UniversalDesignerItem>();
+            List<Connection> connectionToSave = new List<Connection>();
+            JSONFileModel fileModel = new JSONFileModel();
             if (!DiagramViewModel.Items.Any())
             {
                 messageBoxService.ShowError("Расположите хотя бы один элемент на диаграмме, чтобы сохранить её.");
                 return;
             }
-            var univer = DiagramViewModel.Items.First();
-            string jsonString = "";
-            if (univer is UniversalDesignerItemViewModel)
+            foreach (var univer in DiagramViewModel.Items.OfType<UniversalDesignerItemViewModel>()) 
             {
-                UniversalDesignerItemViewModel _univer = univer as UniversalDesignerItemViewModel;
-                UniversalDesignerItem item = new UniversalDesignerItem(_univer.Id, _univer.Left, _univer.Top, _univer.ItemWidth,
-                    _univer.ItemHeight, _univer.Text, _univer.FontSize, _univer.ImageUrl);
-                jsonString = JsonSerializer.Serialize(item);
+                UniversalDesignerItem item = new UniversalDesignerItem(univer.Id, univer.Left, univer.Top, univer.ItemWidth,
+                    univer.ItemHeight, univer.Text, univer.FontSize, univer.ImageUrl);
+                universalToSave.Add(item);
+
             }
+            fileModel.UniversalDesignerItems = universalToSave;
+            foreach (var connectionVM in diagramViewModel.Items.OfType<ConnectorViewModel>())
+            {
+                FullyCreatedConnectorInfo sinkConnector = connectionVM.SinkConnectorInfo as FullyCreatedConnectorInfo;
+
+                Connection connection = new Connection(
+                    connectionVM.Id,
+                    connectionVM.SourceConnectorInfo.DataItem.Id,
+                    GetOrientationFromConnector(connectionVM.SourceConnectorInfo.Orientation),
+                    GetTypeOfDiagramItem(connectionVM.SourceConnectorInfo.DataItem),
+                    sinkConnector.DataItem.Id,
+                    GetOrientationFromConnector(sinkConnector.Orientation),
+                    GetTypeOfDiagramItem(sinkConnector.DataItem));
+                connectionToSave.Add(connection);
+            }
+            fileModel.Connections = connectionToSave;
+            jsonString = JsonSerializer.Serialize(fileModel);
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt";
             saveFileDialog.Title = "Сохранение";
@@ -322,6 +292,12 @@ namespace DiagramDesigner
                 File.WriteAllText(saveFileDialog.FileName, jsonString);
             }
         }
+        private string GetTypeOfDiagramItem(DesignerItemViewModelBase vmType)
+        {
+            if (vmType is UniversalDesignerItemViewModel)
+                return nameof(UniversalDesignerItem);
+            throw new InvalidOperationException(string.Format("Элемент неизвестного типа."));
+        }
         private void ExecuteLoadDiagramCommand(object parameter)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -329,7 +305,7 @@ namespace DiagramDesigner
             openFileDialog.Title = "Открыть диаграмму";
             if (openFileDialog.ShowDialog() == true)
             {
-
+                messageBoxService.ShowError("Загружаемая диаграмма повреждена.");
             }
         }
 

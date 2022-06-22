@@ -18,7 +18,7 @@ namespace DiagramDesigner
         private Rect area;
 
 
-        public ConnectorViewModel(int id, IDiagramViewModel parent, 
+        public ConnectorViewModel(Guid id, IDiagramViewModel parent, 
             FullyCreatedConnectorInfo sourceConnectorInfo, FullyCreatedConnectorInfo sinkConnectorInfo) : base(id,parent)
         {
             Init(sourceConnectorInfo, sinkConnectorInfo);
@@ -26,6 +26,7 @@ namespace DiagramDesigner
 
         public ConnectorViewModel(FullyCreatedConnectorInfo sourceConnectorInfo, ConnectorInfoBase sinkConnectorInfo)
         {
+            Id = Guid.NewGuid();
             Init(sourceConnectorInfo, sinkConnectorInfo);
         }
 

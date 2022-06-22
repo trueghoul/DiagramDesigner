@@ -13,7 +13,7 @@ namespace DiagramDesigner
     {
         private IUIVisualizerService visualiserService;
 
-        public UniversalDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, string text, int fontSize) 
+        public UniversalDesignerItemViewModel(Guid id, IDiagramViewModel parent, double left, double top, string text, int fontSize) 
             : base(id,parent, left,top)
         {
             FontSize = fontSize;
@@ -23,7 +23,7 @@ namespace DiagramDesigner
 
             Init();
         }
-        public UniversalDesignerItemViewModel(int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize) 
+        public UniversalDesignerItemViewModel(Guid id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize) 
             : base(id, parent, left, top, itemWidth, itemHeight)
         {
             FontSize = fontSize;
@@ -36,6 +36,7 @@ namespace DiagramDesigner
 
         public UniversalDesignerItemViewModel() : base()
         {
+            Id = Guid.NewGuid();
             FontSize = 14;
             OnPropertyChanged("FontSize");
 
@@ -65,7 +66,7 @@ namespace DiagramDesigner
         private void Init()
         {
             visualiserService = ApplicationServicesProvider.Instance.Provider.VisualizerService;
-            ShowDataChangeWindowCommand = new SimpleCommand(ExecuteShowDataChangeWindowCommand);
+            ShowDataChangeWindowCommand = new CommandBase(ExecuteShowDataChangeWindowCommand);
             this.ShowConnectors = false;
         }
     }

@@ -13,10 +13,10 @@ namespace DiagramDesigner
 
         public DiagramViewModel()
         {
-            AddItemCommand = new SimpleCommand(ExecuteAddItemCommand);
-            RemoveItemCommand = new SimpleCommand(ExecuteRemoveItemCommand);
-            ClearSelectedItemsCommand = new SimpleCommand(ExecuteClearSelectedItemsCommand);
-            CreateNewDiagramCommand = new SimpleCommand(ExecuteCreateNewDiagramCommand);
+            AddItemCommand = new CommandBase(ExecuteAddItemCommand);
+            RemoveItemCommand = new CommandBase(ExecuteRemoveItemCommand);
+            ClearSelectedItemsCommand = new CommandBase(ExecuteClearSelectedItemsCommand);
+            CreateNewDiagramCommand = new CommandBase(ExecuteCreateNewDiagramCommand);
 
             Mediator.Instance.Register(this);
         }
@@ -33,10 +33,10 @@ namespace DiagramDesigner
         }
 
 
-        public SimpleCommand AddItemCommand { get; private set; }
-        public SimpleCommand RemoveItemCommand { get; private set; }
-        public SimpleCommand ClearSelectedItemsCommand { get; private set; }
-        public SimpleCommand CreateNewDiagramCommand { get; private set; }
+        public CommandBase AddItemCommand { get; private set; }
+        public CommandBase RemoveItemCommand { get; private set; }
+        public CommandBase ClearSelectedItemsCommand { get; private set; }
+        public CommandBase CreateNewDiagramCommand { get; private set; }
 
         public ObservableCollection<SelectableDesignerItemViewModelBase> Items
         {

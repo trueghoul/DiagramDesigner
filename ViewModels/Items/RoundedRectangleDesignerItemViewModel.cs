@@ -12,7 +12,7 @@ namespace DiagramDesigner
     {
         private IUIVisualizerService visualiserService;
 
-        public RoundedRectangleDesignerItemViewModel(double radius, int id, IDiagramViewModel parent, double left, double top, string text, int fontSize, Brush stroke, double strokeThickness)
+        public RoundedRectangleDesignerItemViewModel(double radius, Guid id, IDiagramViewModel parent, double left, double top, string text, int fontSize, Brush stroke, double strokeThickness)
             : base(id, parent, left, top)
         {
             Radius = radius;
@@ -28,7 +28,7 @@ namespace DiagramDesigner
 
             Init();
         }
-        public RoundedRectangleDesignerItemViewModel(double radius, int id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, Brush stroke, double strokeThickness)
+        public RoundedRectangleDesignerItemViewModel(double radius, Guid id, IDiagramViewModel parent, double left, double top, double itemWidth, double itemHeight, string text, int fontSize, Brush stroke, double strokeThickness)
             : base(id, parent, left, top, itemWidth, itemHeight)
         {
             Radius = radius;
@@ -94,7 +94,7 @@ namespace DiagramDesigner
         private void Init()
         {
             visualiserService = ApplicationServicesProvider.Instance.Provider.VisualizerService;
-            ShowDataChangeWindowCommand = new SimpleCommand(ExecuteShowDataChangeWindowCommand);
+            ShowDataChangeWindowCommand = new CommandBase(ExecuteShowDataChangeWindowCommand);
             this.ShowConnectors = false;
         }
     }
