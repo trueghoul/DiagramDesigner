@@ -30,7 +30,9 @@
                    BorderBrush="Transparent"
                    TextWrapping="Wrap"
                    AcceptsReturn="True"
-                     FontFamily="{Binding MyFontFamily}"></TextBox>
+                     FontFamily="{Binding MyFontFamily}"
+                                          FontStyle="Italic"
+                     TextAlignment="Center"></TextBox>
             <Button HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Margin="5"

@@ -73,6 +73,11 @@
                     Command="{Binding GroupCommand}" >
                 <Image Source="/Resources/Images/Icons/grouping.ico"></Image>
             </Button>
+            <Button ToolTip="Показать/Скрыть сетку"
+                    Margin="3,0,3,0"
+                    Command="{Binding GridVisibilityChangeCommand}" >
+                <Image Source="/Resources/Images/Icons/grid.ico"></Image>
+            </Button>
             <Separator></Separator>
             <ProgressBar Margin="8,0,3,0"
                          Visibility="{Binding Path=IsBusy, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"

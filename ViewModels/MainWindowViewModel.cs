@@ -43,6 +43,7 @@ namespace DiagramDesigner
             SaveDiagramCommand = new CommandBase(ExecuteSaveDiagramCommand);
             LoadDiagramCommand = new CommandBase(ExecuteLoadDiagramCommand);
             GroupCommand = new CommandBase(ExecuteGroupCommand);
+            GridVisibilityChangeCommand = new CommandBase(ExecuteGridVisibilityChangeCommand);
 
             ConnectorViewModel.PathFinder = new OrthogonalPathFinder();
 
@@ -54,6 +55,11 @@ namespace DiagramDesigner
         public CommandBase SaveDiagramCommand { get; private set; }
         public CommandBase GroupCommand { get; private set; }
         public CommandBase LoadDiagramCommand { get; private set; }
+        public CommandBase GridVisibilityChangeCommand { get; private set; }
+        private void ExecuteGridVisibilityChangeCommand(object parameter)
+        {
+            DiagramViewModel.GridVisibilityChangeCommand.Execute(null);
+        }
         public ToolBoxViewModel ToolBoxViewModel
         {
             get { return toolBoxViewModel; }

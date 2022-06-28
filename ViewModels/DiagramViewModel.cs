@@ -10,13 +10,28 @@ namespace DiagramDesigner
     public class DiagramViewModel : ViewModelBase, IDiagramViewModel
     {
         private ObservableCollection<SelectableDesignerItemViewModelBase> items = new ObservableCollection<SelectableDesignerItemViewModelBase>();
+        private double _latticeThickness;
+        public double LatticeThickness
+        {
+            get
+            {
+                return _latticeThickness;
+            }
+            set
+            {
+                _latticeThickness = value;
+                OnPropertyChanged(nameof(LatticeThickness));
+            }
+        }
 
         public DiagramViewModel()
         {
+            LatticeThickness = 0.4;
             AddItemCommand = new CommandBase(ExecuteAddItemCommand);
             RemoveItemCommand = new CommandBase(ExecuteRemoveItemCommand);
             ClearSelectedItemsCommand = new CommandBase(ExecuteClearSelectedItemsCommand);
             CreateNewDiagramCommand = new CommandBase(ExecuteCreateNewDiagramCommand);
+            GridVisibilityChangeCommand = new CommandBase(ExecuteGridVisibilityChangeCommand);
 
             Mediator.Instance.Register(this);
         }
@@ -37,6 +52,14 @@ namespace DiagramDesigner
         public CommandBase RemoveItemCommand { get; private set; }
         public CommandBase ClearSelectedItemsCommand { get; private set; }
         public CommandBase CreateNewDiagramCommand { get; private set; }
+        public CommandBase GridVisibilityChangeCommand { get; private set; }
+
+        private void ExecuteGridVisibilityChangeCommand(object parameter)
+        {
+            if (LatticeThickness == 0.4)
+                LatticeThickness = 0;
+            else LatticeThickness = 0.4;
+        }
 
         public ObservableCollection<SelectableDesignerItemViewModelBase> Items
         {

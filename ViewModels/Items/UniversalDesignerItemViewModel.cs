@@ -36,6 +36,7 @@ namespace DiagramDesigner
 
         public UniversalDesignerItemViewModel() : base()
         {
+            ItemWidth = 120;
             Id = Guid.NewGuid();
             FontSize = 14;
             OnPropertyChanged("FontSize");

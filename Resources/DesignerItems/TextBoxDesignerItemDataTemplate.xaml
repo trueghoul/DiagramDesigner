@@ -17,6 +17,7 @@
                    TextWrapping="Wrap"
                    AcceptsReturn="True"
                      FontFamily="{Binding MyFontFamily}"
+                     FontStyle="Italic"
                    ></TextBox>
             <Button HorizontalAlignment="Right"
                     VerticalAlignment="Center"

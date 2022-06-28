@@ -12,7 +12,7 @@
         <Grid>
             <s:Lattice Opacity="0.8">
                 <s:Lattice.RodPen>
-                    <Pen Thickness="0.5" Brush="LightGray"></Pen>
+                    <Pen Thickness="{Binding LatticeThickness}" Brush="Gray"></Pen>
                 </s:Lattice.RodPen>
             </s:Lattice>
             <ScrollViewer Name="DesignerScrollViewer"
