@@ -40,25 +40,26 @@ namespace DiagramDesigner
         }
         private void ExecuteAddItemCommand(object parametr)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;";
-            openFileDialog.Title = "Выбор файла";
-            string _filepath;
-            string _filename;
-            if (openFileDialog.ShowDialog() == true)
+            var openFileDialog = new OpenFileDialog
             {
-                _filepath = openFileDialog.FileName;
-                _filename = openFileDialog.SafeFileName;
-                try
-                {
-                    //File.Copy(_filepath, Path.Combine("../../" + Directory, _filename), true);
-
-                    System.IO.Directory.CreateDirectory("../../bin/Debug/Resources/Images/");
-                    File.Copy(_filepath, Path.Combine("../../bin/Debug/Resources/Images/" + _filename), true);
-                }
-                catch { new Exception(); }
-                _customElements.Add(new ToolBoxData("pack://siteoforigin:,,,/Resources/Images/" + _filename, typeof(UniversalDesignerItemViewModel),  null));
+                Filter = "Image Files|*.jpg;*.jpeg;*.png;",
+                Title = "Выбор файла"
+            };
+            if (openFileDialog.ShowDialog() != true) return;
+            var filepath = openFileDialog.FileName;
+            var filename = openFileDialog.SafeFileName;
+            try
+            {
+                System.IO.Directory.CreateDirectory("../../bin/Debug/Resources/Images/");
+                File.Copy(filepath,
+                    Path.Combine("../../bin/Debug/Resources/Images/" + filename), true);
             }
+            catch
+            {
+                throw new Exception();
+            }
+            _customElements.Add(new ToolBoxData("pack://siteoforigin:,,,/Resources/Images/" + filename,
+                typeof(UniversalDesignerItemViewModel),  null));
         }
         public ObservableCollection<ToolBoxData> BlockDiagram
         {
